@@ -1,0 +1,35 @@
+# Build folders
+Debug/
+Release/
+build/
+cmake-build-*/
+
+# STM32CubeIDE / Eclipse generated
+.metadata/
+.settings/
+*.launch
+
+# Compiled files
+*.o
+*.obj
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.lst
+*.su
+*.d
+*.dep
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup/temp files
+*.bak
+*.tmp
+*~
