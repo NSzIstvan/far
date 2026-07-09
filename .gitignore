@@ -1,3 +1,9 @@
+# Google Drive temporary sync files
+.tmp.driveupload/
+.tmp.drivedownload/
+.tmp.driveupload*
+.tmp.drivedownload*
+
 # Build folders
 Debug/
 Release/
