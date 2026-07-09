@@ -27,6 +27,7 @@ cmake-build-*/
 *.su
 *.d
 *.dep
+*.tmp
 
 # Logs
 *.log
