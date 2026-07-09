@@ -17,6 +17,7 @@ typedef struct
 {
 	bool Off_State;
 	bool Position_State;
+	bool DRL_State;
 	bool Auto_State;
 	bool LowBeam_State;
 	bool FogLight_State;

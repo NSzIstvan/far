@@ -26,7 +26,7 @@
 #define Light_Functionality_High_Beam_Command(val1, val2)	RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(val1, val2)
 #define Light_Functionality_TI_Hazzard_Command(val1, val2)	RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(val1, val2)
 #define Light_Functionality_FOG_Command(val1)				RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(val1)
-#define RTE_CALL_Send_Motor_Position(val1) RTE_Call_MotorApp_MotorControl_Command_Position(val1)
+#define RTE_Call_Send_Motor_Position(val1) RTE_Call_MotorApp_MotorControl_Command_Position(val1)
 
 #define RTE_Write_Light_Command_Rotary_Switch_Value(val) RTE_Write_CommandControl_CommandApp_Light_Command_Rotary_Switch_Value(val)
 #define RTE_Write_Leveling_Pot_Value(val) RTE_Write_CommandControl_CommandApp_Leveling_Pot_Value(val)
