@@ -15,6 +15,7 @@ cmake-build-*/
 .metadata/
 .settings/
 *.launch
+CppProperties.json
 
 # Compiled files
 *.o

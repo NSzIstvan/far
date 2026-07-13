@@ -6,6 +6,11 @@
  */
 #include "../HeadLamp/RTE/RTE.h"
 #include "../include/Light_App.h"
+#include <cstdbool>
+#include <cstdint>
+#include <RTE_Types.h>
+#include <stm32h7xx_nucleo.h>
+#include <stm32h7xx_hal.h>
 
 uint8_t POS_test = 0;
 uint8_t FOG_test = 0;
@@ -20,7 +25,6 @@ typedef union
 	uint8_t drl_light:1;
 	uint8_t pos_light:1;
 	uint8_t low_light:1;
-	uint8_t high_light:1;
 	uint8_t fog_light:1;
 	} bits;
 	uint8_t all_lights;
@@ -36,49 +40,25 @@ typedef union
 	uint8_t all_lights;
 }u_Blink_Light_Functions;
 
+typedef enum
+{
+	auto_drl = 1U,
+	auto_lowB = 2U,
+	auto_highB = 3U
+}e_Auto_Shape_Req;
+
 
 u_Light_Functions light_functions = { .all_lights = LIGHT_OFF};
 u_Blink_Light_Functions blink_functions = { .all_lights = LIGHT_OFF };
 bool high_beam_function = LIGHT_OFF;
-bool lights_auto = false;
+bool lights_auto_function = false;
+e_Auto_Shape_Req auto_shape_req = auto_drl;
 
-void Toggle_LED(Led_TypeDef LED)
-{
-	if (RTE_Call_Get_LED(LED) == 1)
-	{
-		RTE_Call_Set_LED(LED, 0);
-	}
-	else
-	{
-		RTE_Call_Set_LED(LED, 1);
-	}
-}
-
-void LED_operation()
-{
-	static uint32_t tick = 0U;
-
-	  if ((tick % 1000) == 0)
-	  {
-		  Toggle_LED(LED_GREEN);
-	  }
-	  else if ((tick % 1500) == 0U)
-	  {
-		  Toggle_LED(LED_RED);
-	  }
-
-	  if(tick > 12000)
-	  {
-		  tick = 0;
-	  }
-
-	  tick+=20;
-}
 
 static void Get_Light_Functions_Mapped(s_Light_Func_Comm light_funcs)
 {
-	static s_Light_Func_Comm command_light_function = { LIGHT_OFF };
-	if (light_funcs != command_light_function)
+	static s_Light_Func_Comm old_light_function = { LIGHT_OFF };
+	if (light_funcs != old_light_function)
 	{
 		if (true == light_funcs.Off_State) 
 		{
@@ -86,7 +66,7 @@ static void Get_Light_Functions_Mapped(s_Light_Func_Comm light_funcs)
 		}
 		else if (true == light_funcs.Auto_State)
 		{
-			lights_auto = true;
+			lights_auto_function = true;
 		}
 		else
 		{
@@ -96,7 +76,7 @@ static void Get_Light_Functions_Mapped(s_Light_Func_Comm light_funcs)
 			light_functions.bits.fog_light = light_funcs.FogLight_State;
 		}
 
-		command_light_function = light_funcs;
+		old_light_function = light_funcs;
 	}
 }
 
@@ -124,6 +104,10 @@ static void Set_Light_Functions_Off()
 
 }
 
+void Init_Light_App()
+{
+}
+
 void Run_Light_App_Main_10ms()
 {
 	//Read all the Command_App inputs
@@ -142,7 +126,7 @@ void Run_Light_App_Main_10ms()
 
 	if (light_functions.all_lights != LIGHT_OFF)
 	{
-		if (lights_auto)
+		if (lights_auto_function)
 		{
 			//go and check the light sensor and set the shape to on
 			// 
@@ -182,6 +166,7 @@ void Run_Light_App_Main_10ms()
 		Set_Blink_Functions_Off();
 	}
 
+
 	u_Light_Pixel test_pixel = {0};
 	if(seting_test == true)
 	{
@@ -191,6 +176,36 @@ void Run_Light_App_Main_10ms()
 	}
 }
 
-void Init_Light_App()
+
+static void Toggle_LED(Led_TypeDef LED)
 {
+	if (RTE_Call_Get_LED(LED) == 1)
+	{
+		RTE_Call_Set_LED(LED, 0);
+	}
+	else
+	{
+		RTE_Call_Set_LED(LED, 1);
+	}
+}
+
+void LED_operation()
+{
+	static uint32_t tick = 0U;
+
+	if ((tick % 1000) == 0)
+	{
+		Toggle_LED(LED_GREEN);
+	}
+	else if ((tick % 1500) == 0U)
+	{
+		Toggle_LED(LED_RED);
+	}
+
+	if (tick > 12000)
+	{
+		tick = 0;
+	}
+
+	tick += 20;
 }

@@ -1,0 +1,50 @@
+Light_App:
+get from Command_App the requested light functions (Auto, POS, LowBeam, HighBeam, TurnIndicator, ...)
+get from Command_App the luminosity in order to know which shape to be on based on the enviroment light
+make global variables for these light shapes (light_functions-drl,pos,lowbeam,fog; blink_functions-left_TI, right_TI, hazzard; lights_auto_function; high_beam_function)
+send the shapes, to Light_Control, that need to be set to on (duty_cycle for the light luminosity) or set to off
+if auto_shape is requested - decide which light shape to be set (cyclically based on the enviroment light)
+if auto_shape is requested - it has priority on the shapes that controls over the normal shape requestes
+after the initialization it will command the welcoming lights animation and after that it will go in the normal state (the shape requests)
+if the off light is requested for more than 30 seconds, it will command the goodbye lights animation
+if high_beam_function is on for more than 10 seconds it will send to Fan_App the command to increase the fan speed
+if auto_shape is requested - it will send to Motor_App the request that the motor will be controlled only by the inclination sensor
+
+Command_App:
+get from the Command_Control a value from the rotary switch and it il map it to the light functions (off, pos, lowbeam, auto, fog)
+get from the Command_Control the value of the high_beam
+get from the Command_Control the value for the blinker functions (left_TI, right_TI, hazzard)
+send all these commands to the Light_App
+get from the Command_Control the value for the leveling position and sends it to the Motor_App
+get from Fan_Control the headlamp temperature and sends it to he Fan_App
+
+Motor_App:
+get from Command app the level position on which the motor should be sent
+get from the Light App the auto function request which will get the level position
+at Init of the app it will do a referentiation in order to set the motor at the center of course
+it will send to Motor_Control the position for the motor (only 64 steps including the middle position)
+
+Fan_App:
+get from Light_App the request for increase the fan speed
+get from the Command_App the temperature of the headlamp and calculates the fan speed (5 steps)
+send to Fan_Control the fan speed (the step)
+
+
+Light_Control:
+gets from the Light_App which light shape to be turned on and its luminosity (duty_cycle)
+it will send to the pins and to the shift register the command for the LEDs
+
+Command_Control:
+it will read a rotary switch value and it will trunchiate it to 5 values) - more detailes later
+it will read the high_beam button
+it will read the blinker functions (right_TI, left_TI, hazzard) from the a rotary button - more details later
+all these values will be sent to the Command_App
+it will read 2 inclination sensors (for up and down) in order to have the leveling value
+it will read the a potentiometer for the manual  adjustment of the motors
+these 2 values will be sent to the Motor_App
+
+
+all the pins will be managed lately in an other request. the main headlamp project is found in https://github.com/NSzIstvan/far/tree/main/Core/HeadLamp, 
+the _App are found in the App folder and the _Control are found in the HAL folder. All the comunication are done through the RTE which is found in the RTE folder
+(please respect the format that is already done)
+Please take in consideration what is already done and write the code to be according of what already exsists.
