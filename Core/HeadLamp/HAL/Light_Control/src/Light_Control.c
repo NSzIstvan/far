@@ -34,6 +34,7 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim8;
 
 s_Light_Func_Desc light_func[7] = {0};
+bool isInitDone = false;
 
 
 void Set_LED(Led_TypeDef LED, uint8_t status)
@@ -98,9 +99,10 @@ void Init_Light_Control()
 {
 //	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 //	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
+	isInitDone = true;
 }
 
 void Run_Light_Control_Main_10ms()
 {
-
+	RTE_Write_Light_Control_Init_Done(isInitDone);
 }

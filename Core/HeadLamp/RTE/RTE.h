@@ -42,6 +42,7 @@
 #define RTE_Write_Sensor_Temp(val) RTE_Write_Sensor_FanApp_Temperature_Read_Value(val)
 #define RTE_Write_Sensor_Angle(val) RTE_Write_Sensor_MotorApp_Sensor_Angle(val)
 #define RTE_Write_FanSpeed(val) RTE_Write_FanApp_FanControl_FanSpeed(val)
+#define RTE_Write_Light_Control_Init_Done(val) RTE_Write_LightControl_LightApp_InitDone(val)
 
 #define RTE_Read_Light_Command_Rotary_Switch_Value() RTE_Read_CommandApp_CommandControl_Light_Command_Rotary_Switch_Value()
 #define RTE_Read_Leveling_Pot_Value() RTE_Read_CommandApp_Command_Control_Leveling_Pot_Value()
@@ -56,6 +57,7 @@
 #define RTE_Read_Leveling_Command_Value() RTE_Read_CommandApp_MotorApp_Leveling_Command_Value()
 #define RTE_Read_Sensor_Temp() Rte_Read_FanApp_Sensor_Sensor_Temp()
 #define RTE_Read_FanSpeed() RTE_Read_FanControl_FanApp_FanSpeed()
+#define RTE_Read_Light_Control_Init_Done RTE_Read_LightApp_LightControl_InitDone()
 
 uint8_t RTE_Read_Light_Control_LED_Status();
 bool RTE_Internal_Read_LED(void);

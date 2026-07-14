@@ -11,18 +11,19 @@ static bool isInit = false;
 static uint8_t buffer_1 = 0;
 static uint8_t buffer_2 = 0;
 static uint8_t buffer_3 = 0;
-static bool buffer_4 = 0;
-static bool buffer_5 = 0;
-static bool buffer_6 = 0;
-static bool buffer_7 = 0;
+static bool buffer_4 = false;
+static bool buffer_5 = false;
+static bool buffer_6 = false;
+static bool buffer_7 = false;
 static s_Light_Func_Comm buffer_8 = {0};
 static uint16_t buffer_9 = 0;
 static s_Blink_Func_Comm buffer_10 = {0};
-static bool buffer_11 = 0;
+static bool buffer_11 = false;
 static uint8_t buffer_12 = 0;
 static uint8_t buffer_13 = 0;
 static uint8_t buffer_14 = 0;
 static uint8_t buffer_15 = 0;
+static bool buffer_16 = false;
 
 
 void init()
@@ -263,3 +264,12 @@ void RTE_Call_MotorApp_MotorControl_Command_Position(uint8_t val)
 	Set_Motor_Position(val);
 }
 
+void RTE_Write_LightControl_LightApp_InitDone(bool val)
+{
+	buffer_16 = val;
+}
+
+bool RTE_Read_LightApp_LightControl_InitDone()
+{
+	return buffer_16;
+}

@@ -45,4 +45,12 @@ typedef union{
 	}bit;
 }u_Light_Pixel;
 
+typedef struct
+{
+    u_Light_Pixel pixels_25;
+    u_Light_Pixel pixels_50;
+    u_Light_Pixel pixels_75;
+    u_Light_Pixel pixels_100;
+} s_Light_Pixel_PWM_Command;
+
 #endif /* HEADLAMP_RTE_RTE_TYPES_H_ */
