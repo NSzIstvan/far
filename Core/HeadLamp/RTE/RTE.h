@@ -23,10 +23,10 @@
 
 #define Light_Functionality_POS_DRL_Command(val) 	RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(val)
 #define Light_Functionality_Low_Beam_Command(val) 			RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(val)
-#define Light_Functionality_High_Beam_Command(val)	RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(val1)
-#define Light_Functionality_TI_Hazzard_Command(val1)	RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(val1)
-#define Light_Functionality_FOG_Command(val1)				RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(val1)
-#define RTE_Call_Send_Motor_Position(val1) RTE_Call_MotorApp_MotorControl_Command_Position(val1)
+#define Light_Functionality_High_Beam_Command(val)	RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(val)
+#define Light_Functionality_TI_Hazzard_Command(val)	RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(val)
+#define Light_Functionality_FOG_Command(val)				RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(val)
+#define RTE_Call_Send_Motor_Position(val) RTE_Call_MotorApp_MotorControl_Command_Position(val)
 
 #define RTE_Write_Light_Command_Rotary_Switch_Value(val) RTE_Write_CommandControl_CommandApp_Light_Command_Rotary_Switch_Value(val)
 #define RTE_Write_Leveling_Pot_Value(val) RTE_Write_CommandControl_CommandApp_Leveling_Pot_Value(val)
@@ -88,13 +88,18 @@ void RTE_Write_FanApp_LightApp_HeadLamp_Temp(uint8_t val);
 void RTE_Write_Sensor_FanApp_Temperature_Read_Value(uint8_t val);
 void RTE_Write_Sensor_MotorApp_Sensor_Angle(uint8_t val);
 void RTE_Write_FanApp_FanControl_FanSpeed(uint8_t val);
+void RTE_Write_LightControl_LightApp_InitDone(bool val);
+void RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control_Level(uint8_t val);
+void RTE_Write_SensorControl_LightApp_Ambiental_Luminosity(uint8_t val);
+void RTE_Write_LightApp_MotorApp_Motor_Command_Auto(bool val);
+void RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(bool val);
+void RTE_Write_SensorControl_CommandApp_HighBeam_Pot_Control_Value(uint16_t val);
 
-void RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(u_Light_Pixel val1, uint8_t val2);
-void RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(uint8_t val1);
-void RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(u_Light_Pixel val1, uint8_t val2);
-void RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(u_Light_Pixel val1, uint8_t val2);
-void RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(uint8_t val1);
-
+void RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(s_Light_Pixel_PWM_Command val);
+void RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(uint8_t val);
+void RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(s_Light_Pixel_PWM_Command val);
+void RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(s_Light_Pixel_PWM_Command val);
+void RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(uint8_t val);
 void RTE_Call_MotorApp_MotorControl_Command_Position(uint8_t val);
 
 uint8_t RTE_Read_CommandApp_CommandControl_Light_Command_Rotary_Switch_Value();
@@ -111,8 +116,12 @@ bool RTE_Read_LightApp_CommandApp_HighBeam_Command_State();
 uint8_t RTE_Read_FanApp_Sensor_Temperature_Read_Value();
 uint8_t RTE_Read_MotorApp_Sensor_Sensor_Angle();
 uint8_t RTE_Read_FanControl_FanApp_FanSpeed();
-
-
+bool RTE_Read_LightControl_LightApp_InitDone();
+uint8_t RTE_Read_CommandApp_LightApp_HighBeam_Pot_Control_Level();
+uint8_t RTE_Read_SensorControl_LightApp_Ambiental_Luminosity();
+bool RTE_Read_LightApp_MotorApp_Motor_Command_Auto();
+bool RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam();
+uint16_t RTE_Read_SensorControl_CommandApp_HighBeam_Pot_Control_Value();
 
 void init();
 void cyclic_task_10ms();

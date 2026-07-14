@@ -1,6 +1,6 @@
 Light_App:
 get from Command_App the requested light functions (Auto, POS, LowBeam, HighBeam, TurnIndicator, ...)
-get from Command_App the luminosity in order to know which shape to be on based on the enviroment light
+get from Sensor_Control the luminosity in order to know which shape to be on based on the enviroment light
 make global variables for these light shapes (light_functions-drl,pos,lowbeam,fog; blink_functions-left_TI, right_TI, hazzard; lights_auto_function; high_beam_function)
 send the shapes, to Light_Control, that need to be set to on (duty_cycle for the light luminosity) or set to off
 if auto_shape is requested - decide which light shape to be set (cyclically based on the enviroment light)
@@ -33,6 +33,7 @@ get from the Sensor_Control the value of the temperature and calculates the fan 
 
 Light_Control:
 gets from the Light_App which light shape to be turned on and its luminosity (duty_cycle)
+for each shape it will have mapped (through defines) each LED (or LED group) which correspond to that shape
 it will send to the pins and to the shift register the command for the LEDs
 
 Command_Control:

@@ -109,17 +109,17 @@ void RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(uint8_t val)
 
 void RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(s_Light_Pixel_PWM_Command val)
 {
-	Set_Light_Func_HighBeam_Command(val1);
+	Set_Light_Func_HighBeam_Command(val);
 }
 
 void RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(s_Light_Pixel_PWM_Command val)
 {
-	Set_Light_Func_TI_Hazard_Command(val1);
+	Set_Light_Func_TI_Hazard_Command(val);
 }
 
-void RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(uint8_t val1)
+void RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(uint8_t val)
 {
-	Set_Light_Func_FOG_Command(val1);
+	Set_Light_Func_FOG_Command(val);
 }
 
 void RTE_Write_CommandControl_CommandApp_Light_Command_Rotary_Switch_Value(uint8_t val)
@@ -283,7 +283,7 @@ void RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control_Level(val)
 	buffer_17 = val;
 }
 
-uint16_t RTE_Read_CommandApp_LightApp_HighBeam_Pot_Control_Level()
+uint8_t RTE_Read_CommandApp_LightApp_HighBeam_Pot_Control_Level()
 {
 	return buffer_17;
 }
