@@ -15,7 +15,7 @@ get from the Command_Control a value from the rotary switch and it il map it to 
 get from the Command_Control the value of the high_beam
 get from the Command_Control the value for the blinker functions (left_TI, right_TI, hazzard)
 send all these commands to the Light_App
-get from the Command_Control the value for the highe beam's potentiometer position (for the HighBeam controlled LEDSs) and sends it to the Light_App
+get from the Command_Control the value for the highe beam's potentiometer position (for the HighBeam controlled LEDSs), map the value to the range 0-100 and sends it to the Light_App
 
 Motor_App:
 afther the Init of the app it will do a referentiation in order to set the motor at the center of course
@@ -40,7 +40,8 @@ it will read a rotary switch value and it will trunchiate it to 5 values - more 
 it will read the high_beam button
 it will read the blinker functions (right_TI, left_TI, hazzard) from the a rotary button - more details later
 all these values will be sent to the Command_App
-it will read the a potentiometer for the manual  adjustment of the motors (this value should be mapped on a 64 step scale) and this value will be sent to the Motor_App
+it will read the potentiometer for the manual  adjustment of the motors (this value should be mapped on a 64 step scale) and this value will be sent to the Motor_App
+it will read the potentiometer value for the HighBeam controlled LEDs and it will send it to the Command_App
 
 Fan_Control:
 get the fan speed from Fan_App and then adjust the speed (5 speeds: 0, 25, 50, 75, 100) of the FAN through the pin
@@ -50,7 +51,7 @@ it will get a request from the Motor_App for the steps that are needed to be don
 after the motor reached its position it will signal the Motor_App that the previous position requested was reached
 
 Sensor_Control:
-read the pin for the ambiental luminosity, maps the value to a percentage scale (0%-100%) and sends it to the Command_App_App
+read the pin for the ambiental luminosity, maps the value to a percentage scale (0%-100%) and sends it to the Light_App
 read the temperature of the headlamp through the pin -> - maps the temperature value to [0,150] -> sends the value to Fan_App
 it will read 2 inclination sensors (for up and down) in order to have the leveling value (this value should be mapped on a 64 step scale) and it will send it to the Motor_App
 
