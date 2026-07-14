@@ -44,7 +44,7 @@
 #define RTE_Write_FanSpeed(val) RTE_Write_FanApp_FanControl_FanSpeed(val)
 #define RTE_Write_Light_Control_Init_Done(val) RTE_Write_LightControl_LightApp_InitDone(val)
 #define RTE_Write_HighBeam_Pot_Control(val) RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control(val)
-#define RTE_Write_Ambiental_Luminosity(val) RTE_Write_CommandApp_LightApp_Ambiental_Luminosity(val)
+#define RTE_Write_Ambiental_Luminosity(val) RTE_Write_SensorControl_CommandApp_Ambiental_Luminosity(val)
 #define RTE_Write_Motor_Command_Auto(val) RTE_Write_LightApp_MotorApp_Motor_Command_Auto(val)
 #define RTE_Write_Increase_FanSpeed_HighBeam(val) RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(val)
 
@@ -61,10 +61,10 @@
 #define RTE_Read_Leveling_Command_Value() RTE_Read_CommandApp_MotorApp_Leveling_Command_Value()
 #define RTE_Read_Sensor_Temp() Rte_Read_FanApp_Sensor_Sensor_Temp()
 #define RTE_Read_FanSpeed() RTE_Read_FanControl_FanApp_FanSpeed()
-#define RTE_Read_Light_Control_Init_Done() RTE_Read_LightApp_LightControl_InitDone()
-#define RTE_Read_HighBeam_Pot_Control() RTE_Read_LightApp_CommandApp_HighBeam_Pot_Control()
-#define RTE_Read_Ambiental_Luminosity() RTE_Read_LightApp_CommandApp_Ambiental_Luminosity()
-#define RTE_Read_Motor_Command_Auto() RTE_Read_MotorApp_LightApp_Motor_Command_Auto()
+#define RTE_Read_Light_Control_Init_Done() RTE_Read_LightControl_LightApp_InitDone()
+#define RTE_Read_HighBeam_Pot_Control() RTE_Read_CommandApp_LightApp_HighBeam_Pot_Control()
+#define RTE_Read_Ambiental_Luminosity() RTE_Read_CommandApp_SensorControl_Ambiental_Luminosity()
+#define RTE_Read_Motor_Command_Auto() RTE_Read_LightApp_MotorApp_Motor_Command_Auto()
 #define RTE_Read_Increase_FanSpeed_HighBeam() RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam()
 
 uint8_t RTE_Read_Light_Control_LED_Status();

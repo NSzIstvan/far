@@ -15,22 +15,14 @@
 /* Defines                                                   */
 /* ========================================================= */
 
-#define COMMAND_APP_OFF_STATE                 false
-#define COMMAND_APP_ON_STATE                  true
+#define COMMAND_APP_OFF_STATE                    false
+#define COMMAND_APP_ON_STATE                     true
 
-#define COMMAND_APP_DEFAULT_LEVELING_VALUE    0U
-#define COMMAND_APP_DEFAULT_HB_POT_VALUE      0U
+#define COMMAND_APP_DEFAULT_HB_POT_VALUE         0U
+#define COMMAND_APP_DEFAULT_LUMINOSITY_VALUE     100U
 
-/*
- * TODO:
- * Replace this default value when the real luminosity source is connected
- * to Command_App through RTE.
- *
- * Expected range:
- * 0   -> very dark
- * 100 -> very bright
- */
-#define COMMAND_APP_DEFAULT_LUMINOSITY_VALUE  100U
+#define COMMAND_APP_LUMINOSITY_MIN_VALUE         0U
+#define COMMAND_APP_LUMINOSITY_MAX_VALUE         100U
 
 /* ========================================================= */
 /* Local Types                                               */
@@ -40,8 +32,8 @@ typedef enum
 {
     COMMAND_APP_LIGHT_OFF_VALUE = 0U,
     COMMAND_APP_LIGHT_POSITION_VALUE,
-    COMMAND_APP_LIGHT_AUTO_VALUE,
     COMMAND_APP_LIGHT_LOW_BEAM_VALUE,
+    COMMAND_APP_LIGHT_AUTO_VALUE,
     COMMAND_APP_LIGHT_FOG_VALUE
 } e_Command_App_Light_Rotary_Value;
 
@@ -55,9 +47,15 @@ typedef struct
     bool right_blinker_button_state;
     bool hazzard_button_state;
 
-    uint16_t leveling_pot_value;
     uint16_t high_beam_pot_value;
 
+    /*
+     * This value comes from Sensor_Control.
+     *
+     * Expected range:
+     * 0   -> very dark
+     * 100 -> very bright
+     */
     uint8_t ambiental_luminosity_value;
 } s_Command_App_Input_Data;
 
@@ -68,7 +66,6 @@ typedef struct
 
     bool high_beam_state;
 
-    uint16_t leveling_position;
     uint16_t high_beam_pot_control;
 
     uint8_t ambiental_luminosity_value;
@@ -95,11 +92,10 @@ static void Command_App_Transmit_Output_Data(void);
 static void Command_App_Calculate_Light_Functions(void);
 static void Command_App_Calculate_Blinker_Functions(void);
 static void Command_App_Calculate_High_Beam_Function(void);
-static void Command_App_Calculate_Potentiometer_Commands(void);
+static void Command_App_Calculate_High_Beam_Pot_Command(void);
 static void Command_App_Calculate_Luminosity_Command(void);
 
-static uint16_t Command_App_Read_High_Beam_Pot_Value(void);
-static uint8_t Command_App_Read_Ambiental_Luminosity_Value(void);
+static uint8_t Command_App_Limit_Luminosity_Value(uint8_t luminosity_value);
 
 /* ========================================================= */
 /* Local Functions                                           */
@@ -115,7 +111,6 @@ static void Command_App_Reset_Input_Data(void)
     command_app_input_data.right_blinker_button_state = COMMAND_APP_OFF_STATE;
     command_app_input_data.hazzard_button_state = COMMAND_APP_OFF_STATE;
 
-    command_app_input_data.leveling_pot_value = COMMAND_APP_DEFAULT_LEVELING_VALUE;
     command_app_input_data.high_beam_pot_value = COMMAND_APP_DEFAULT_HB_POT_VALUE;
 
     command_app_input_data.ambiental_luminosity_value = COMMAND_APP_DEFAULT_LUMINOSITY_VALUE;
@@ -129,14 +124,13 @@ static void Command_App_Reset_Output_Data(void)
     command_app_output_data.light_func_switch_position.Auto_State = COMMAND_APP_OFF_STATE;
     command_app_output_data.light_func_switch_position.LowBeam_State = COMMAND_APP_OFF_STATE;
     command_app_output_data.light_func_switch_position.FogLight_State = COMMAND_APP_OFF_STATE;
+	
+    command_app_output_data.high_beam_state = COMMAND_APP_OFF_STATE;
 
     command_app_output_data.blinker_func.L_Blink = COMMAND_APP_OFF_STATE;
     command_app_output_data.blinker_func.R_Blink = COMMAND_APP_OFF_STATE;
     command_app_output_data.blinker_func.Hazzard_Blink = COMMAND_APP_OFF_STATE;
 
-    command_app_output_data.high_beam_state = COMMAND_APP_OFF_STATE;
-
-    command_app_output_data.leveling_position = COMMAND_APP_DEFAULT_LEVELING_VALUE;
     command_app_output_data.high_beam_pot_control = COMMAND_APP_DEFAULT_HB_POT_VALUE;
 
     command_app_output_data.ambiental_luminosity_value = COMMAND_APP_DEFAULT_LUMINOSITY_VALUE;
@@ -159,14 +153,9 @@ static void Command_App_Read_Input_Data(void)
     command_app_input_data.hazzard_button_state =
         RTE_Read_Hazzard_Button_Value();
 
-    command_app_input_data.leveling_pot_value =
-        (uint16_t)RTE_Read_Leveling_Pot_Value();
+    command_app_input_data.high_beam_pot_value = RTE_Read_HighBeam_Pot_Control();
 
-    command_app_input_data.high_beam_pot_value =
-        Command_App_Read_High_Beam_Pot_Value();
-
-    command_app_input_data.ambiental_luminosity_value =
-        Command_App_Read_Ambiental_Luminosity_Value();
+    command_app_input_data.ambiental_luminosity_value = RTE_Read_Ambiental_Luminosity();
 }
 
 static void Command_App_Calculate(void)
@@ -176,7 +165,7 @@ static void Command_App_Calculate(void)
     Command_App_Calculate_Light_Functions();
     Command_App_Calculate_Blinker_Functions();
     Command_App_Calculate_High_Beam_Function();
-    Command_App_Calculate_Potentiometer_Commands();
+    Command_App_Calculate_High_Beam_Pot_Command();
     Command_App_Calculate_Luminosity_Command();
 }
 
@@ -188,8 +177,6 @@ static void Command_App_Transmit_Output_Data(void)
 
     RTE_Write_High_Beam_Command_State(command_app_output_data.high_beam_state);
 
-    RTE_Write_Leveling_Command_Value(command_app_output_data.leveling_position);
-
     RTE_Write_HighBeam_Pot_Control(command_app_output_data.high_beam_pot_control);
 
     RTE_Write_Ambiental_Luminosity(command_app_output_data.ambiental_luminosity_value);
@@ -198,16 +185,16 @@ static void Command_App_Transmit_Output_Data(void)
 static void Command_App_Calculate_Light_Functions(void)
 {
     /*
-     * Rotary switch mapping:
+     * Rotary switch mapping according to requirements:
      *
      * 0 -> OFF
      * 1 -> POS
-     * 2 -> AUTO
-     * 3 -> LOW BEAM
+     * 2 -> LOW BEAM
+     * 3 -> AUTO
      * 4 -> FOG
      *
-     * DRL is not mapped here because the current requirement for Command_App
-     * lists rotary states as off, pos, lowbeam, auto, fog.
+     * DRL is not directly mapped from Command_App because the current
+     * requirement lists only: off, pos, lowbeam, auto, fog.
      */
     switch ((e_Command_App_Light_Rotary_Value)command_app_input_data.light_rotary_switch_position)
     {
@@ -218,17 +205,17 @@ static void Command_App_Calculate_Light_Functions(void)
             break;
         }
 
-        case COMMAND_APP_LIGHT_AUTO_VALUE:
-        {
-            command_app_output_data.light_func_switch_position.Off_State = COMMAND_APP_OFF_STATE;
-            command_app_output_data.light_func_switch_position.Auto_State = COMMAND_APP_ON_STATE;
-            break;
-        }
-
         case COMMAND_APP_LIGHT_LOW_BEAM_VALUE:
         {
             command_app_output_data.light_func_switch_position.Off_State = COMMAND_APP_OFF_STATE;
             command_app_output_data.light_func_switch_position.LowBeam_State = COMMAND_APP_ON_STATE;
+            break;
+        }
+
+        case COMMAND_APP_LIGHT_AUTO_VALUE:
+        {
+            command_app_output_data.light_func_switch_position.Off_State = COMMAND_APP_OFF_STATE;
+            command_app_output_data.light_func_switch_position.Auto_State = COMMAND_APP_ON_STATE;
             break;
         }
 
@@ -255,9 +242,6 @@ static void Command_App_Calculate_Blinker_Functions(void)
      * 1. Hazzard
      * 2. Left indicator
      * 3. Right indicator
-     *
-     * Even if Light_App currently implements only the left scrolling indicator,
-     * Command_App still forwards the right indicator request for future support.
      */
     if (COMMAND_APP_ON_STATE == command_app_input_data.hazzard_button_state)
     {
@@ -273,7 +257,7 @@ static void Command_App_Calculate_Blinker_Functions(void)
     }
     else
     {
-        /* Blink output remains OFF. */
+        /* Blinker output remains OFF. */
     }
 }
 
@@ -283,15 +267,12 @@ static void Command_App_Calculate_High_Beam_Function(void)
         command_app_input_data.high_beam_button_state;
 }
 
-static void Command_App_Calculate_Potentiometer_Commands(void)
+static void Command_App_Calculate_High_Beam_Pot_Command(void)
 {
     /*
-     * Leveling potentiometer goes to Motor_App.
-     * HighBeam potentiometer goes to Light_App.
+     * HighBeam potentiometer value is forwarded to Light_App.
+     * Light_App will use this value in Auto shape to move HighBeam LEDs 2 by 2.
      */
-    command_app_output_data.leveling_position =
-        command_app_input_data.leveling_pot_value;
-
     command_app_output_data.high_beam_pot_control =
         command_app_input_data.high_beam_pot_value;
 }
@@ -299,48 +280,27 @@ static void Command_App_Calculate_Potentiometer_Commands(void)
 static void Command_App_Calculate_Luminosity_Command(void)
 {
     /*
+     * Luminosity comes from Sensor_Control and is forwarded to Light_App.
      * Light_App uses this value for Auto shape decision.
      */
     command_app_output_data.ambiental_luminosity_value =
-        command_app_input_data.ambiental_luminosity_value;
+        Command_App_Limit_Luminosity_Value(command_app_input_data.ambiental_luminosity_value);
 }
 
-static uint16_t Command_App_Read_High_Beam_Pot_Value(void)
+static uint8_t Command_App_Limit_Luminosity_Value(uint8_t luminosity_value)
 {
-    uint16_t local_high_beam_pot_value = COMMAND_APP_DEFAULT_HB_POT_VALUE;
+    uint8_t local_luminosity_value = luminosity_value;
 
-    /*
-     * TODO:
-     * Replace this local value with the real Command_Control -> Command_App
-     * RTE read when the final interface name is available.
-     *
-     * Example expected interface:
-     * local_high_beam_pot_value = RTE_Read_HighBeam_Pot_Value();
-     *
-     * Output is already sent to Light_App using:
-     * RTE_Write_HighBeam_Pot_Control(...)
-     */
+    if (local_luminosity_value > COMMAND_APP_LUMINOSITY_MAX_VALUE)
+    {
+        local_luminosity_value = COMMAND_APP_LUMINOSITY_MAX_VALUE;
+    }
+    else
+    {
+        /* Value is already in range. */
+    }
 
-    return local_high_beam_pot_value;
-}
-
-static uint8_t Command_App_Read_Ambiental_Luminosity_Value(void)
-{
-    uint8_t local_ambiental_luminosity_value = COMMAND_APP_DEFAULT_LUMINOSITY_VALUE;
-
-    /*
-     * TODO:
-     * Replace this local value with the real luminosity RTE read when the
-     * source interface is available.
-     *
-     * Example expected interface:
-     * local_ambiental_luminosity_value = RTE_Read_CommandApp_Luminosity_Value();
-     *
-     * Output is already sent to Light_App using:
-     * RTE_Write_Ambiental_Luminosity(...)
-     */
-
-    return local_ambiental_luminosity_value;
+    return local_luminosity_value;
 }
 
 /* ========================================================= */

@@ -272,7 +272,7 @@ void RTE_Write_LightControl_LightApp_InitDone(bool val)
 	buffer_16 = val;
 }
 
-bool RTE_Read_LightApp_LightControl_InitDone()
+bool RTE_Read_LightControl_LightApp_InitDone()
 {
 	return buffer_16;
 }
@@ -282,17 +282,17 @@ void RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control(val)
 	buffer_17 = val;
 }
 
-uint16_t RTE_Read_LightApp_CommandApp_HighBeam_Pot_Control()
+uint16_t RTE_Read_CommandApp_LightApp_HighBeam_Pot_Control()
 {
 	return buffer_17;
 }
 
-void RTE_Write_CommandApp_LightApp_Ambiental_Luminosity(val)
+void RTE_Write_SensorControl_CommandApp_Ambiental_Luminosity(val)
 {
 	buffer_18 = val;
 }
 
-uint8_t RTE_Read_LightApp_CommandApp_Ambiental_Luminosity()
+uint8_t RTE_Read_CommandApp_SensorControl_Ambiental_Luminosity()
 {
 	return buffer_18;
 }
@@ -302,7 +302,7 @@ void RTE_Write_LightApp_MotorApp_Motor_Command_Auto(val)
 	buffer_19 = val;
 }
 
-bool RTE_Read_MotorApp_LightApp_Motor_Command_Auto()
+bool RTE_Read_LightApp_MotorApp_Motor_Command_Auto()
 {
 	return buffer_19;
 }
