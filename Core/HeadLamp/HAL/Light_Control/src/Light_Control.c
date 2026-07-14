@@ -37,6 +37,8 @@ s_Light_Func_Desc light_func[7] = {0};
 bool isInitDone = false;
 
 
+/*
+*	Need these lines for testing
 void Set_LED(Led_TypeDef LED, uint8_t status)
 {
 	if (status == 1)
@@ -64,35 +66,31 @@ uint8_t Get_LED(Led_TypeDef LED)
 
 	return state;
 }
+*/
 
 /* Set the LEDs for the POS_DRL_FOG functionalities  */
-void Set_Light_Func_POS_DRL_Command(u_Light_Pixel Light_Func, uint8_t duty_cycle)
+void Set_Light_Func_POS_DRL_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
-	__HAL_TIM_SET_COMPARE(POS_DRL_TIM, POS_DRL_CH, MAP_DUTY_CYCLE(duty_cycle));
 }
 
 /* Set the LEDs for the Low Beam functionality */
 void Set_Light_Func_LowBeam_Command(uint8_t duty_cycle)
 {
-	__HAL_TIM_SET_COMPARE(LB_TIM, LB_CH, MAP_DUTY_CYCLE(duty_cycle));
 }
 
 /* Set the LEDs for the High Beam functionality */
-void Set_Light_Func_HighBeam_Command(u_Light_Pixel pixel_states, uint8_t duty_cycle)
+void Set_Light_Func_HighBeam_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
-
 }
 
 /* Set the LEDs for the Turn Indicator and Hazard functionalities */
-void Set_Light_Func_TI_Hazard_Command(u_Light_Pixel pixel_states, uint8_t duty_cycle)
+void Set_Light_Func_TI_Hazard_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
-
 }
 
 /* Set the LEDs for the FOG functionality */
 void Set_Light_Func_FOG_Command(uint8_t duty_cycle)
 {
-	__HAL_TIM_SET_COMPARE(FOG_TIM, POS_DRL_CH, MAP_DUTY_CYCLE(duty_cycle));
 }
 
 void Init_Light_Control()

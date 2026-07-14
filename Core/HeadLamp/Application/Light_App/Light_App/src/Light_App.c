@@ -83,10 +83,6 @@ typedef struct
     bool high_beam_command;
 
     /*
-     * TODO:
-     * Replace this local value with real sensor information when
-     * Sensor_App -> Light_App RTE interface is added.
-     *
      * Expected range:
      * 0   -> very dark
      * 100 -> very bright
@@ -94,10 +90,6 @@ typedef struct
     uint8_t luminosity_value;
 
     /*
-     * TODO:
-     * Replace this local value with real Command_App potentiometer value
-     * when Command_App -> Light_App high beam shape interface is added.
-     *
      * Expected range:
      * 0    -> first pair of high beam LEDs
      * 4095 -> last pair of high beam LEDs
@@ -119,11 +111,6 @@ typedef struct
      * Send this to Fan_App through RTE when the interface is added.
      */
     bool fan_speed_increase_request;
-
-    /*
-     * TODO:
-     * Send this to Motor_App through RTE when Auto leveling interface is added.
-     */
     bool motor_auto_control_request;
 } s_Light_App_Output_Data;
 
@@ -237,13 +224,8 @@ static void Light_App_Reset_Internal_Data(void)
 
 static void Light_App_Read_Input_Data(void)
 {
-    /*
-     * TODO:
-     * Replace these local values with real RTE reads when the interfaces
-     * are added.
-     */
-    uint8_t local_luminosity_sensor_value = 100U;
-    uint16_t local_high_beam_shape_pot_value = 0U;
+    uint8_t local_luminosity_sensor_value = RTE_Read_Ambiental_Luminosity();
+    uint16_t local_high_beam_shape_pot_value = RTE_Read_HighBeam_Pot_Control();
 
     light_app_input_data.light_command = RTE_Read_Light_Command_Switch_Position();
     light_app_input_data.blink_command = RTE_Read_Blinker_Command_State();
@@ -551,35 +533,13 @@ static void Light_App_Handle_High_Beam_Timer(void)
 
 static void Light_App_Transmit_Output_Data(void)
 {
-    /*
-     * NEW RTE expected form:
-     *
-     * Light_Functionality_POS_DRL_Command(s_Light_Pixel_PWM_Command command);
-     * Light_Functionality_High_Beam_Command(s_Light_Pixel_PWM_Command command);
-     * Light_Functionality_TI_Hazzard_Command(s_Light_Pixel_PWM_Command command);
-     *
-     * LowBeam and Fog remain simple single-channel duty commands.
-     */
-
     Light_Functionality_POS_DRL_Command(light_app_output_data.drl_pos_command);
-
     Light_Functionality_Low_Beam_Command(light_app_output_data.low_beam_duty);
-
     Light_Functionality_High_Beam_Command(light_app_output_data.high_beam_command);
-
     Light_Functionality_TI_Hazzard_Command(light_app_output_data.ti_command);
-
     Light_Functionality_FOG_Command(light_app_output_data.fog_duty);
-
-    /*
-     * TODO:
-     * RTE_Write_LightApp_FanSpeedIncreaseRequest(light_app_output_data.fan_speed_increase_request);
-     */
-
-    /*
-     * TODO:
-     * RTE_Write_LightApp_MotorAutoControlRequest(light_app_output_data.motor_auto_control_request);
-     */
+    RTE_Write_Motor_Command_Auto(light_app_output_data.motor_auto_control_request);
+    RTE_Write_Increase_FanSpeed_HighBeam(light_app_output_data.fan_speed_increase_request);
 }
 
 static s_Light_Pixel_PWM_Command Light_App_Get_PWM_Command_Off(void)

@@ -21,10 +21,10 @@
 #define RTE_Call_Set_LED(val, status) RTE_Call_Light_Control_To_HALL_Set_LED(val, status)
 #define RTE_Call_Get_LED(val) RTE_CALL_Light_Control_To_Hall_Get_LED(val)
 
-#define Light_Functionality_POS_DRL_Command(val1, val2) 	RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(val1, val2)
-#define Light_Functionality_Low_Beam_Command(val1) 			RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(val1)
-#define Light_Functionality_High_Beam_Command(val1, val2)	RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(val1, val2)
-#define Light_Functionality_TI_Hazzard_Command(val1, val2)	RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(val1, val2)
+#define Light_Functionality_POS_DRL_Command(val) 	RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(val)
+#define Light_Functionality_Low_Beam_Command(val) 			RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(val)
+#define Light_Functionality_High_Beam_Command(val)	RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(val1)
+#define Light_Functionality_TI_Hazzard_Command(val1)	RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(val1)
 #define Light_Functionality_FOG_Command(val1)				RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(val1)
 #define RTE_Call_Send_Motor_Position(val1) RTE_Call_MotorApp_MotorControl_Command_Position(val1)
 
@@ -43,6 +43,10 @@
 #define RTE_Write_Sensor_Angle(val) RTE_Write_Sensor_MotorApp_Sensor_Angle(val)
 #define RTE_Write_FanSpeed(val) RTE_Write_FanApp_FanControl_FanSpeed(val)
 #define RTE_Write_Light_Control_Init_Done(val) RTE_Write_LightControl_LightApp_InitDone(val)
+#define RTE_Write_HighBeam_Pot_Control(val) RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control(val)
+#define RTE_Write_Ambiental_Luminosity(val) RTE_Write_CommandApp_LightApp_Ambiental_Luminosity(val)
+#define RTE_Write_Motor_Command_Auto(val) RTE_Write_LightApp_MotorApp_Motor_Command_Auto(val)
+#define RTE_Write_Increase_FanSpeed_HighBeam(val) RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(val)
 
 #define RTE_Read_Light_Command_Rotary_Switch_Value() RTE_Read_CommandApp_CommandControl_Light_Command_Rotary_Switch_Value()
 #define RTE_Read_Leveling_Pot_Value() RTE_Read_CommandApp_Command_Control_Leveling_Pot_Value()
@@ -57,7 +61,11 @@
 #define RTE_Read_Leveling_Command_Value() RTE_Read_CommandApp_MotorApp_Leveling_Command_Value()
 #define RTE_Read_Sensor_Temp() Rte_Read_FanApp_Sensor_Sensor_Temp()
 #define RTE_Read_FanSpeed() RTE_Read_FanControl_FanApp_FanSpeed()
-#define RTE_Read_Light_Control_Init_Done RTE_Read_LightApp_LightControl_InitDone()
+#define RTE_Read_Light_Control_Init_Done() RTE_Read_LightApp_LightControl_InitDone()
+#define RTE_Read_HighBeam_Pot_Control() RTE_Read_LightApp_CommandApp_HighBeam_Pot_Control()
+#define RTE_Read_Ambiental_Luminosity() RTE_Read_LightApp_CommandApp_Ambiental_Luminosity()
+#define RTE_Read_Motor_Command_Auto() RTE_Read_MotorApp_LightApp_Motor_Command_Auto()
+#define RTE_Read_Increase_FanSpeed_HighBeam() RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam()
 
 uint8_t RTE_Read_Light_Control_LED_Status();
 bool RTE_Internal_Read_LED(void);

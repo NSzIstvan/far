@@ -24,7 +24,10 @@ static uint8_t buffer_13 = 0;
 static uint8_t buffer_14 = 0;
 static uint8_t buffer_15 = 0;
 static bool buffer_16 = false;
-
+static uint16_t buffer_17 = 0;
+static uint16_t buffer_18 = 0;
+static bool buffer_19 = false;
+static bool buffer_20 = false;
 
 void init()
 {
@@ -93,24 +96,24 @@ uint8_t RTE_CALL_Light_Control_To_Hall_Get_LED(Led_TypeDef LED)
 	return Get_LED(LED);
 }
 
-void RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(u_Light_Pixel val1, uint8_t val2)
+void RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(s_Light_Pixel_PWM_Command val)
 {
-	Set_Light_Func_POS_DRL_Command(val1, val2);
+	Set_Light_Func_POS_DRL_Command(val);
 }
 
-void RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(uint8_t val1)
+void RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(uint8_t val)
 {
-	Set_Light_Func_LowBeam_Command(val1);
+	Set_Light_Func_LowBeam_Command(val);
 }
 
-void RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(u_Light_Pixel val1, uint8_t val2)
+void RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(s_Light_Pixel_PWM_Command val)
 {
-	Set_Light_Func_HighBeam_Command(val1, val2);
+	Set_Light_Func_HighBeam_Command(val1);
 }
 
-void RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(u_Light_Pixel val1, uint8_t val2)
+void RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(s_Light_Pixel_PWM_Command val)
 {
-	Set_Light_Func_TI_Hazard_Command(val1, val2);
+	Set_Light_Func_TI_Hazard_Command(val1);
 }
 
 void RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(uint8_t val1)
@@ -272,4 +275,44 @@ void RTE_Write_LightControl_LightApp_InitDone(bool val)
 bool RTE_Read_LightApp_LightControl_InitDone()
 {
 	return buffer_16;
+}
+
+void RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control(val)
+{
+	buffer_17 = val;
+}
+
+uint16_t RTE_Read_LightApp_CommandApp_HighBeam_Pot_Control()
+{
+	return buffer_17;
+}
+
+void RTE_Write_CommandApp_LightApp_Ambiental_Luminosity(val)
+{
+	buffer_18 = val;
+}
+
+uint8_t RTE_Read_LightApp_CommandApp_Ambiental_Luminosity()
+{
+	return buffer_18;
+}
+
+void RTE_Write_LightApp_MotorApp_Motor_Command_Auto(val)
+{
+	buffer_19 = val;
+}
+
+bool RTE_Read_MotorApp_LightApp_Motor_Command_Auto()
+{
+	return buffer_19;
+}
+
+void RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(val)
+{
+	buffer_20 = val;
+}
+
+bool RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam()
+{
+	return buffer_20;
 }
