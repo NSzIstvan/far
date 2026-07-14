@@ -20,7 +20,7 @@ get from the Command_Control the value for the highe beam's potentiometer positi
 Motor_App:
 afther the Init of the app it will do a referentiation in order to set the motor at the center of course
 get from Command_Control the potentiometer value and calculates the level position on which the motor should be sent
-get from Command_Control the values from the tilt sensors
+get from Sensor_Control the values from the tilt sensors
 get from the Light_App the auto function request. This request is uesd to determine which command should the motors execute (the one from the tilt sensor, or the one from the pot)
 calculates the new position of the motor related to the actual one.
 it will not call the Motor_Control for a new position until the Motor_Control will not report that the motor has reached its destination position (hence it will get from Motor_Control the movement status of the motor)
@@ -29,7 +29,7 @@ the steps will be calculated as 31 steps for "down" and 32 steps for "up" with t
 
 Fan_App:
 get from Light_App the request for increase the fan speed
-get from the Fan_Control the value of the temperature and calculates the fan speed (one of the 5 steps) that need to be sent to Fan_Control
+get from the Sensor_Control the value of the temperature and calculates the fan speed (one of the 5 steps) that need to be sent to Fan_Control
 
 Light_Control:
 gets from the Light_App which light shape to be turned on and its luminosity (duty_cycle)
@@ -40,17 +40,19 @@ it will read a rotary switch value and it will trunchiate it to 5 values - more 
 it will read the high_beam button
 it will read the blinker functions (right_TI, left_TI, hazzard) from the a rotary button - more details later
 all these values will be sent to the Command_App
-it will read the a potentiometer for the manual  adjustment of the motors (this value should be mapped on a 64 step scale)
-it will read 2 inclination sensors (for up and down) in order to have the leveling value (this value should be mapped on a 64 step scale)
-these 2 values will be sent to the Motor_App
+it will read the a potentiometer for the manual  adjustment of the motors (this value should be mapped on a 64 step scale) and this value will be sent to the Motor_App
 
 Fan_Control:
-read the temperature of the headlamp through the pin -> - maps the temperature value to [0,150] -> sends the value to Fan_App
 get the fan speed from Fan_App and then adjust the speed (5 speeds: 0, 25, 50, 75, 100) of the FAN through the pin
 
 Motor_Control:
 it will get a request from the Motor_App for the steps that are needed to be done for the new position
 after the motor reached its position it will signal the Motor_App that the previous position requested was reached
+
+Sensor_Control:
+read the pin for the ambiental luminosity, maps the value to a percentage scale (0%-100%) and sends it to the Command_App_App
+read the temperature of the headlamp through the pin -> - maps the temperature value to [0,150] -> sends the value to Fan_App
+it will read 2 inclination sensors (for up and down) in order to have the leveling value (this value should be mapped on a 64 step scale) and it will send it to the Motor_App
 
 
 all the pins will be managed lately in an other request. the main headlamp project is found in https://github.com/NSzIstvan/far/tree/main/Core/HeadLamp, 
