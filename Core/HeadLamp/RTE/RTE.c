@@ -28,7 +28,7 @@ static uint8_t buffer_17 = 0;
 static uint8_t buffer_18 = 0;
 static bool buffer_19 = false;
 static bool buffer_20 = false;
-static uint16_t buffer_20 = 0;
+static uint16_t buffer_21 = 0;
 
 void init()
 {
@@ -278,7 +278,7 @@ bool RTE_Read_LightControl_LightApp_InitDone()
 	return buffer_16;
 }
 
-void RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control_Level(val)
+void RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control_Level(uint8_t val)
 {
 	buffer_17 = val;
 }
@@ -288,7 +288,7 @@ uint8_t RTE_Read_CommandApp_LightApp_HighBeam_Pot_Control_Level()
 	return buffer_17;
 }
 
-void RTE_Write_SensorControl_LightApp_Ambiental_Luminosity(val)
+void RTE_Write_SensorControl_LightApp_Ambiental_Luminosity(uint8_t val)
 {
 	buffer_18 = val;
 }
@@ -298,7 +298,7 @@ uint8_t RTE_Read_SensorControl_LightApp_Ambiental_Luminosity()
 	return buffer_18;
 }
 
-void RTE_Write_LightApp_MotorApp_Motor_Command_Auto(val)
+void RTE_Write_LightApp_MotorApp_Motor_Command_Auto(bool val)
 {
 	buffer_19 = val;
 }
@@ -308,7 +308,7 @@ bool RTE_Read_LightApp_MotorApp_Motor_Command_Auto()
 	return buffer_19;
 }
 
-void RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(val)
+void RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(bool val)
 {
 	buffer_20 = val;
 }
@@ -318,12 +318,12 @@ bool RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam()
 	return buffer_20;
 }
 
-void RTE_Write_SensorControl_CommandApp_HighBeam_Pot_Control_Value(val)
+void RTE_Write_CommandControl_CommandApp_HighBeam_Pot_Control_Value(uint16_t val)
 {
 	buffer_21 = val;
 }
 
-uint16_t RTE_Read_SensorControl_CommandApp_HighBeam_Pot_Control_Value()
+uint16_t RTE_Read_CommandControl_CommandApp_HighBeam_Pot_Control_Value()
 {
 	return buffer_21;
 }

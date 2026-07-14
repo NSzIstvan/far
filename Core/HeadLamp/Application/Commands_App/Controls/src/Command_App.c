@@ -131,7 +131,7 @@ static void Command_App_Read_Input_Data(void)
     command_app_input_data.hazzard_button_state =
         RTE_Read_Hazzard_Button_Value();
 
-    command_app_input_data.high_beam_pot_value = RTE_Read_HighBeam_Pot_Control_Level();
+    command_app_input_data.high_beam_pot_value = RTE_Read_HighBeam_Pot_Control_Value();
 }
 
 static void Command_App_Calculate(void)
@@ -152,7 +152,7 @@ static void Command_App_Transmit_Output_Data(void)
 
     RTE_Write_High_Beam_Command_State(command_app_output_data.high_beam_state);
 
-    RTE_Write_HighBeam_Pot_Control(command_app_output_data.high_beam_pot_control);
+    RTE_Write_HighBeam_Pot_Control_Level(command_app_output_data.high_beam_pot_control);
 }
 
 static void Command_App_Calculate_Light_Functions(void)
@@ -247,7 +247,7 @@ static void Command_App_Calculate_High_Beam_Pot_Command(void)
      * Light_App will use this value in Auto shape to move HighBeam LEDs 2 by 2.
      */
     command_app_output_data.high_beam_pot_control =
-        command_app_input_data.high_beam_pot_value;
+    (uint8_t)((command_app_input_data.high_beam_pot_value * 100U) / 4095U);
 }
 
 /* ========================================================= */

@@ -47,7 +47,7 @@
 #define RTE_Write_Ambiental_Luminosity(val) RTE_Write_SensorControl_LightApp_Ambiental_Luminosity(val)
 #define RTE_Write_Motor_Command_Auto(val) RTE_Write_LightApp_MotorApp_Motor_Command_Auto(val)
 #define RTE_Write_Increase_FanSpeed_HighBeam(val) RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(val)
-#define RTE_Write_HighBeam_Pot_Control_Value(val) RTE_Write_SensorControl_CommandApp_HighBeam_Pot_Control_Value(val)
+#define RTE_Write_HighBeam_Pot_Control_Value(val) RTE_Write_CommandControl_CommandApp_HighBeam_Pot_Control_Value(val)
 
 #define RTE_Read_Light_Command_Rotary_Switch_Value() RTE_Read_CommandApp_CommandControl_Light_Command_Rotary_Switch_Value()
 #define RTE_Read_Leveling_Pot_Value() RTE_Read_CommandApp_Command_Control_Leveling_Pot_Value()
@@ -67,7 +67,7 @@
 #define RTE_Read_Ambiental_Luminosity() RTE_Read_SensorControl_LightApp_Ambiental_Luminosity()
 #define RTE_Read_Motor_Command_Auto() RTE_Read_LightApp_MotorApp_Motor_Command_Auto()
 #define RTE_Read_Increase_FanSpeed_HighBeam() RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam()
-#define RTE_Read_HighBeam_Pot_Control_Value() RTE_Read_SensorControl_CommandApp_HighBeam_Pot_Control_Value()
+#define RTE_Read_HighBeam_Pot_Control_Value() RTE_Read_CommandControl_CommandApp_HighBeam_Pot_Control_Value()
 
 uint8_t RTE_Read_Light_Control_LED_Status();
 bool RTE_Internal_Read_LED(void);
@@ -93,7 +93,7 @@ void RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control_Level(uint8_t val);
 void RTE_Write_SensorControl_LightApp_Ambiental_Luminosity(uint8_t val);
 void RTE_Write_LightApp_MotorApp_Motor_Command_Auto(bool val);
 void RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(bool val);
-void RTE_Write_SensorControl_CommandApp_HighBeam_Pot_Control_Value(uint16_t val);
+void RTE_Write_CommandControl_CommandApp_HighBeam_Pot_Control_Value(uint16_t val);
 
 void RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(s_Light_Pixel_PWM_Command val);
 void RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(uint8_t val);
@@ -121,7 +121,7 @@ uint8_t RTE_Read_CommandApp_LightApp_HighBeam_Pot_Control_Level();
 uint8_t RTE_Read_SensorControl_LightApp_Ambiental_Luminosity();
 bool RTE_Read_LightApp_MotorApp_Motor_Command_Auto();
 bool RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam();
-uint16_t RTE_Read_SensorControl_CommandApp_HighBeam_Pot_Control_Value();
+uint16_t RTE_Read_CommandControl_CommandApp_HighBeam_Pot_Control_Value();
 
 void init();
 void cyclic_task_10ms();
