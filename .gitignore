@@ -10,6 +10,7 @@ Release/
 build/
 cmake-build-*/
 .vs/
+.vscode/
 
 # STM32CubeIDE / Eclipse generated
 .metadata/

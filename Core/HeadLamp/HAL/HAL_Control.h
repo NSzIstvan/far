@@ -10,7 +10,7 @@
 
 #include "Command_Control/include/Command_Control.h"
 #include "Light_Control/include/Light_Control.h"
-#include "Sensor/include/Sensor.h"
+#include "Sensor_Control/include/Sensor_Control.h"
 #include "Motor_Control/include/Motor_Control.h"
 #include "Fan_Control/include/Fan_Control.h"
 

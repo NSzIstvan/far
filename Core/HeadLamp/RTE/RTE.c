@@ -29,6 +29,7 @@ static uint8_t buffer_18 = 0;
 static bool buffer_19 = false;
 static bool buffer_20 = false;
 static uint16_t buffer_21 = 0;
+static uint8_t buffer_22 = 0;
 
 void init()
 {
@@ -45,6 +46,7 @@ void init()
 	//Application components Init functions
 		Init_Command_App();
 		Init_Light_App();
+		Init_Motor_App();
 		Init_Fan_App();
 	}
 
@@ -72,6 +74,7 @@ void cyclic_task_20ms()
 		Run_Sensor_Main_20ms();
 
 		Run_Command_App_Main_20ms();
+		Run_Motor_App_Main_20ms();
 		Run_Motor_Control_Main_20ms();
 
 	}
@@ -326,4 +329,14 @@ void RTE_Write_CommandControl_CommandApp_HighBeam_Pot_Control_Value(uint16_t val
 uint16_t RTE_Read_CommandControl_CommandApp_HighBeam_Pot_Control_Value()
 {
 	return buffer_21;
+}
+
+void RTE_Write_SensorControl_MotorApp_Leveling_Sensor_Angle(uint8_t val)
+{
+	buffer_22 = val;
+}
+
+uint8_t RTE_Read_SensorControl_MotorApp_Leveling_Sensor_Angle()
+{
+	return buffer_22;
 }
