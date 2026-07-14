@@ -225,7 +225,7 @@ static void Light_App_Reset_Internal_Data(void)
 static void Light_App_Read_Input_Data(void)
 {
     uint8_t local_luminosity_sensor_value = RTE_Read_Ambiental_Luminosity();
-    uint16_t local_high_beam_shape_pot_value = RTE_Read_HighBeam_Pot_Control();
+    uint16_t local_high_beam_shape_pot_value = RTE_Read_HighBeam_Pot_Control_Level();
 
     light_app_input_data.light_command = RTE_Read_Light_Command_Switch_Position();
     light_app_input_data.blink_command = RTE_Read_Blinker_Command_State();
@@ -385,8 +385,6 @@ static void Light_App_Calculate_Auto_Shape(void)
     light_app_output_data.motor_auto_control_request = true;
 
     /*
-     * TODO:
-     * Calibrate luminosity thresholds after the real sensor is integrated.
      *
      * Current logic:
      * bright environment -> DRL

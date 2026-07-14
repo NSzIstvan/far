@@ -15,7 +15,7 @@ get from the Command_Control a value from the rotary switch and it il map it to 
 get from the Command_Control the value of the high_beam
 get from the Command_Control the value for the blinker functions (left_TI, right_TI, hazzard)
 send all these commands to the Light_App
-get from the Command_Control the value for the highe beam's potentiometer position (for the HighBeam controlled LEDSs), map the value to the range 0-100 and sends it to the Light_App
+get from the Command_Control the value for the highe beam's potentiometer position (for the HighBeam controlled LEDSs), map the value to the range 0-100 and sends the level to the Light_App
 
 Motor_App:
 afther the Init of the app it will do a referentiation in order to set the motor at the center of course

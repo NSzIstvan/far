@@ -15,14 +15,10 @@
 /* Defines                                                   */
 /* ========================================================= */
 
-#define COMMAND_APP_OFF_STATE                    false
-#define COMMAND_APP_ON_STATE                     true
+#define COMMAND_APP_OFF_STATE                    (false)
+#define COMMAND_APP_ON_STATE                     (true)
 
-#define COMMAND_APP_DEFAULT_HB_POT_VALUE         0U
-#define COMMAND_APP_DEFAULT_LUMINOSITY_VALUE     100U
-
-#define COMMAND_APP_LUMINOSITY_MIN_VALUE         0U
-#define COMMAND_APP_LUMINOSITY_MAX_VALUE         100U
+#define COMMAND_APP_DEFAULT_HB_POT_VALUE         (0U)
 
 /* ========================================================= */
 /* Local Types                                               */
@@ -48,15 +44,6 @@ typedef struct
     bool hazzard_button_state;
 
     uint16_t high_beam_pot_value;
-
-    /*
-     * This value comes from Sensor_Control.
-     *
-     * Expected range:
-     * 0   -> very dark
-     * 100 -> very bright
-     */
-    uint8_t ambiental_luminosity_value;
 } s_Command_App_Input_Data;
 
 typedef struct
@@ -67,8 +54,6 @@ typedef struct
     bool high_beam_state;
 
     uint16_t high_beam_pot_control;
-
-    uint8_t ambiental_luminosity_value;
 } s_Command_App_Output_Data;
 
 /* ========================================================= */
@@ -93,9 +78,6 @@ static void Command_App_Calculate_Light_Functions(void);
 static void Command_App_Calculate_Blinker_Functions(void);
 static void Command_App_Calculate_High_Beam_Function(void);
 static void Command_App_Calculate_High_Beam_Pot_Command(void);
-static void Command_App_Calculate_Luminosity_Command(void);
-
-static uint8_t Command_App_Limit_Luminosity_Value(uint8_t luminosity_value);
 
 /* ========================================================= */
 /* Local Functions                                           */
@@ -112,8 +94,6 @@ static void Command_App_Reset_Input_Data(void)
     command_app_input_data.hazzard_button_state = COMMAND_APP_OFF_STATE;
 
     command_app_input_data.high_beam_pot_value = COMMAND_APP_DEFAULT_HB_POT_VALUE;
-
-    command_app_input_data.ambiental_luminosity_value = COMMAND_APP_DEFAULT_LUMINOSITY_VALUE;
 }
 
 static void Command_App_Reset_Output_Data(void)
@@ -132,8 +112,6 @@ static void Command_App_Reset_Output_Data(void)
     command_app_output_data.blinker_func.Hazzard_Blink = COMMAND_APP_OFF_STATE;
 
     command_app_output_data.high_beam_pot_control = COMMAND_APP_DEFAULT_HB_POT_VALUE;
-
-    command_app_output_data.ambiental_luminosity_value = COMMAND_APP_DEFAULT_LUMINOSITY_VALUE;
 }
 
 static void Command_App_Read_Input_Data(void)
@@ -153,9 +131,7 @@ static void Command_App_Read_Input_Data(void)
     command_app_input_data.hazzard_button_state =
         RTE_Read_Hazzard_Button_Value();
 
-    command_app_input_data.high_beam_pot_value = RTE_Read_HighBeam_Pot_Control();
-
-    command_app_input_data.ambiental_luminosity_value = RTE_Read_Ambiental_Luminosity();
+    command_app_input_data.high_beam_pot_value = RTE_Read_HighBeam_Pot_Control_Level();
 }
 
 static void Command_App_Calculate(void)
@@ -166,7 +142,6 @@ static void Command_App_Calculate(void)
     Command_App_Calculate_Blinker_Functions();
     Command_App_Calculate_High_Beam_Function();
     Command_App_Calculate_High_Beam_Pot_Command();
-    Command_App_Calculate_Luminosity_Command();
 }
 
 static void Command_App_Transmit_Output_Data(void)
@@ -178,8 +153,6 @@ static void Command_App_Transmit_Output_Data(void)
     RTE_Write_High_Beam_Command_State(command_app_output_data.high_beam_state);
 
     RTE_Write_HighBeam_Pot_Control(command_app_output_data.high_beam_pot_control);
-
-    RTE_Write_Ambiental_Luminosity(command_app_output_data.ambiental_luminosity_value);
 }
 
 static void Command_App_Calculate_Light_Functions(void)
@@ -275,32 +248,6 @@ static void Command_App_Calculate_High_Beam_Pot_Command(void)
      */
     command_app_output_data.high_beam_pot_control =
         command_app_input_data.high_beam_pot_value;
-}
-
-static void Command_App_Calculate_Luminosity_Command(void)
-{
-    /*
-     * Luminosity comes from Sensor_Control and is forwarded to Light_App.
-     * Light_App uses this value for Auto shape decision.
-     */
-    command_app_output_data.ambiental_luminosity_value =
-        Command_App_Limit_Luminosity_Value(command_app_input_data.ambiental_luminosity_value);
-}
-
-static uint8_t Command_App_Limit_Luminosity_Value(uint8_t luminosity_value)
-{
-    uint8_t local_luminosity_value = luminosity_value;
-
-    if (local_luminosity_value > COMMAND_APP_LUMINOSITY_MAX_VALUE)
-    {
-        local_luminosity_value = COMMAND_APP_LUMINOSITY_MAX_VALUE;
-    }
-    else
-    {
-        /* Value is already in range. */
-    }
-
-    return local_luminosity_value;
 }
 
 /* ========================================================= */
