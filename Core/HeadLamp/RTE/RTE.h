@@ -39,7 +39,7 @@
 #define RTE_Write_High_Beam_Command_State(val) RTE_Write_CommandApp_LightApp_HighBeam_Command(val)
 #define RTE_Write_Leveling_Command_Value(val) RTE_Write_CommandApp_MotorApp_Leveling_Command_Value(val)
 #define RTE_Write_HeadLamp_Temp(val) RTE_Write_FanApp_LightApp_HeadLamp_Temp(val)
-#define RTE_Write_Sensor_Temp(val) RTE_Write_Sensor_FanApp_Temperature_Read_Value(val)
+#define RTE_Write_Sensor_Ambiental_Temp(val) RTE_Write_SensorControll_FanApp_Sensor_Ambiental_Temp(val)
 #define RTE_Write_Sensor_Angle(val) RTE_Write_Sensor_MotorApp_Sensor_Angle(val)
 #define RTE_Write_FanSpeed(val) RTE_Write_FanApp_FanControl_FanSpeed(val)
 #define RTE_Write_Light_Control_Init_Done(val) RTE_Write_LightControl_LightApp_InitDone(val)
@@ -62,7 +62,7 @@
 #define RTE_Read_HighBeam_Command_State() RTE_Read_LightApp_CommandApp_HighBeam_Command_State()
 #define RTE_Read_HeadLamp_Temp() RTE_Read_LightApp_FanApp_HeadLamp_Temp()
 #define RTE_Read_Leveling_Command_Value() RTE_Read_CommandApp_MotorApp_Leveling_Command_Value()
-#define RTE_Read_Sensor_Temp() Rte_Read_FanApp_Sensor_Sensor_Temp()
+#define RTE_Read_Sensor_Ambiental_Temp() RTE_Read_SensorControl_FanApp_Sensor_Ambiental_Temp()
 #define RTE_Read_FanSpeed() RTE_Read_FanControl_FanApp_FanSpeed()
 #define RTE_Read_Light_Control_Init_Done() RTE_Read_LightControl_LightApp_InitDone()
 #define RTE_Read_HighBeam_Pot_Control_Level() RTE_Read_CommandApp_LightApp_HighBeam_Pot_Control_Level()
@@ -89,7 +89,7 @@ void RTE_Write_CommandApp_LightApp_Blinker_Command_State(s_Blink_Func_Comm val);
 void RTE_Write_CommandApp_LightApp_HighBeam_Command(bool val);
 void RTE_Write_CommandApp_MotorApp_Leveling_Command_Value(uint16_t val);
 void RTE_Write_FanApp_LightApp_HeadLamp_Temp(uint8_t val);
-void RTE_Write_Sensor_FanApp_Temperature_Read_Value(uint8_t val);
+void RTE_Write_SensorControll_FanApp_Sensor_Ambiental_Temp(uint8_t val);
 void RTE_Write_Sensor_MotorApp_Sensor_Angle(uint8_t val);
 void RTE_Write_FanApp_FanControl_FanSpeed(uint8_t val);
 void RTE_Write_LightControl_LightApp_InitDone(bool val);
@@ -119,7 +119,7 @@ s_Blink_Func_Comm RTE_Read_LightApp_CommandApp_Blinker_Command_State();
 uint8_t RTE_Read_LightApp_FanApp_HeadLamp_Temp();
 uint16_t RTE_Read_CommandApp_MotorApp_Leveling_Command_Value();
 bool RTE_Read_LightApp_CommandApp_HighBeam_Command_State();
-uint8_t RTE_Read_FanApp_Sensor_Temperature_Read_Value();
+uint8_t RTE_Read_SensorControl_FanApp_Sensor_Ambiental_Temp();
 uint8_t RTE_Read_MotorApp_Sensor_Sensor_Angle();
 uint8_t RTE_Read_FanControl_FanApp_FanSpeed();
 bool RTE_Read_LightControl_LightApp_InitDone();

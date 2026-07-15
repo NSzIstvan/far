@@ -226,12 +226,12 @@ bool RTE_Read_LightApp_CommandApp_HighBeam_Command_State()
 	return buffer_11;
 }
 
-void RTE_Write_Sensor_FanApp_Temperature_Read_Value(uint8_t val)
+void RTE_Write_SensorControll_FanApp_Sensor_Ambiental_Temp(uint8_t val)
 {
 	buffer_12 = val;
 }
 
-uint8_t RTE_Read_FanApp_Sensor_Temperature_Read_Value()
+uint8_t RTE_Read_SensorControl_FanApp_Sensor_Ambiental_Temp()
 {
 	return buffer_12;
 }

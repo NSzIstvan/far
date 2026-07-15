@@ -521,12 +521,6 @@ static void Light_App_Handle_High_Beam_Timer(void)
         high_beam_timer_ms = 0U;
         light_app_output_data.fan_speed_increase_request = false;
     }
-
-    /*
-     * TODO:
-     * Send fan_speed_increase_request to Fan_App through RTE when
-     * Light_App -> Fan_App interface is added.
-     */
 }
 
 static void Light_App_Transmit_Output_Data(void)

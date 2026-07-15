@@ -29,7 +29,7 @@ void Run_Sensor_Main_20ms()
 	if (new_temperature_value_read != temperature_value_read)
 	{
 		temperature_value_read = new_temperature_value_read;
-		RTE_Write_Sensor_Temp((uint8_t)Map_Temp_Sensor_Value(temperature_value_read));
+		RTE_Write_Sensor_Ambiental_Temp((uint8_t)Map_Temp_Sensor_Value(temperature_value_read));
 	}
 
 	uint8_t new_angle_value_read = Read_Angle_Sensor_Value();
