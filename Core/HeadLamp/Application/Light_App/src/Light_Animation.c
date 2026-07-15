@@ -5,7 +5,7 @@
  * Author: nsist
  */
 
-#include "../include/Light_animation.h"
+#include "../include/Light_Animation.h"
 
 #include <stdbool.h>
 #include <stdint.h>

@@ -5,7 +5,7 @@
  * Author: nsist
  */
 
-#include "../include/Light_scrolling_ind.h"
+#include "../include/Light_Scrolling_Ind.h"
 
 #include <stdbool.h>
 #include <stdint.h>

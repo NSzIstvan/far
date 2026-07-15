@@ -106,7 +106,7 @@ static s_Motor_App_Input_Data motor_app_input_data;
 static s_Motor_App_Output_Data motor_app_output_data;
 
 static e_Motor_App_State motor_app_state = MOTOR_APP_REF_TO_MIN_REQ;
-static uint8_t motor_stuck_timer = 0;
+static uint16_t motor_stuck_timer = 0;
 static uint8_t motor_app_number_of_retries = 0;
 
 static bool motor_app_is_initialized = false;

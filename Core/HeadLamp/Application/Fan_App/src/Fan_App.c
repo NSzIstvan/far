@@ -186,7 +186,7 @@ static uint8_t Fan_App_Limit_Temperature_Value(uint8_t temperature_value)
 {
     uint8_t local_temperature_value = temperature_value;
 
-    if (local_temperature_value > FAN_APP_TEMP_MAX_VALUE)
+    if (local_temperature_value >= FAN_APP_TEMP_MAX_VALUE)
     {
         local_temperature_value = FAN_APP_TEMP_MAX_VALUE;
     }

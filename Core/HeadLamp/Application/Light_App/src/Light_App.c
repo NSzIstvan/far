@@ -7,8 +7,8 @@
 
 #include "../HeadLamp/RTE/RTE.h"
 #include "../include/Light_App.h"
-#include "../include/Light_animation.h"
-#include "../include/Light_scrolling_ind.h"
+#include "../include/Light_Animation.h"
+#include "../include/Light_Scrolling_Ind.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -36,7 +36,7 @@
 #define LIGHT_APP_LUMINOSITY_DARK_LEVEL         30U
 #define LIGHT_APP_LUMINOSITY_LIGHT_LEVEL        70U
 
-#define LIGHT_APP_HIGH_BEAM_POT_MAX_VALUE       4095U
+#define LIGHT_APP_HIGH_BEAM_POT_MAX_VALUE       100U
 #define LIGHT_APP_HIGH_BEAM_PAIR_NUMBER         4U
 
 /* ========================================================= */
