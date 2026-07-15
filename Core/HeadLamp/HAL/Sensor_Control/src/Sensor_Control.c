@@ -11,16 +11,31 @@
 
 uint8_t temperature_value_read = 0;
 uint8_t angle_value_read = 0;
+uint16_t HighBeam_Pot_Value = 0U;
+uint16_t HighBeam_Pot_Pin = 0U;
 
 uint8_t Read_Temp_Sensor_Value();
 uint8_t Read_Angle_Sensor_Value();
 uint8_t Map_Temp_Sensor_Value(uint8_t map_temp);
 uint8_t Map_Angle_Sensor_Value(uint8_t map_angle);
 
+
+void Get_HighBeam_Pot_Value(void)
+{
+    /* read ADC pin */
+}
+
+void Write_HighBeam_Pot_Value(void)
+{
+    RTE_Write_HighBeam_Pot_Control_Value(HighBeam_Pot_Value);
+}
+
 void Init_Sensor()
 {
 	temperature_value_read = 0;
 	angle_value_read = 0;
+	HighBeam_Pot_Value = 0U;
+	HighBeam_Pot_Pin = 0U;
 }
 
 void Run_Sensor_Main_20ms()
@@ -36,8 +51,10 @@ void Run_Sensor_Main_20ms()
 	if(new_angle_value_read != angle_value_read)
 	{
 		angle_value_read = new_angle_value_read;
-		RTE_Write_Sensor_Angle((uint8_t)Map_Angle_Sensor_Value(angle_value_read));
+		RTE_Write_Leveling_Sensor_Angle((uint8_t)Map_Angle_Sensor_Value(angle_value_read));
 	}
+	Get_HighBeam_Pot_Value();
+	Write_HighBeam_Pot_Value();
 }
 
 /* Read temperature sensor value from the PIN*/

@@ -88,12 +88,12 @@ void Write_L_Blinker_Button_Value()
 
 void Write_Hazzard_Button_Value()
 {
-	RTE_Write_Hazzard_Button_Value(L_Blinker_Button_Value);
+	RTE_Write_Hazzard_Button_Value(Hazzard_Button_Value);
 }
 
 void Write_HighBeam_Button_Value()
 {
-	RTE_Write_HighBeam_Button_Value(L_Blinker_Button_Value);
+	RTE_Write_HighBeam_Button_Value(HighBeam_Button_Value);
 }
 
 void Init_Command_Control()

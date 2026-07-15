@@ -246,7 +246,7 @@ uint8_t RTE_Read_LightApp_FanApp_HeadLamp_Temp()
 	return buffer_13;
 }
 
-void RTE_Write_Sensor_MotorApp_Sensor_Angle(uint8_t val)
+void RTE_Write_SensorControl_MotorApp_Sensor_Angle(uint8_t val)
 {
 	buffer_14 = val;
 

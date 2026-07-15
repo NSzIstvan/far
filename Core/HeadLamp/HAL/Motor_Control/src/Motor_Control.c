@@ -20,6 +20,7 @@ void Init_Motor_Control()
 	current_motor_pos = 0u;
 	requested_motor_pos = 0u;
 	motor_direction = MOTOR_CONTROL_DIRECTION_DOWN;
+	RTE_Write_Motor_Movement_Finished(true);
 }
 
 void Run_Motor_Control_Main_20ms()
@@ -29,5 +30,7 @@ void Run_Motor_Control_Main_20ms()
 
 void Move_Motor_Steps(uint8_t direction, uint8_t steps)
 {
-	requested_motor_pos = pos;
+	motor_direction = direction;
+    requested_motor_pos = steps;
+    RTE_Write_Motor_Movement_Finished(false);
 }

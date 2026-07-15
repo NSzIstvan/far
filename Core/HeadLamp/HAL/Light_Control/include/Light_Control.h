@@ -13,10 +13,10 @@
 void Init_Light_Control();
 void Run_Light_Control_Main_10ms();
 
-void Set_Light_Func_POS_DRL_Command(u_Light_Pixel Light_Func, uint8_t duty_cycle);
+void Set_Light_Func_POS_DRL_Command(s_Light_Pixel_PWM_Command pixel_duties);
 void Set_Light_Func_LowBeam_Command(uint8_t duty_cycle);
-void Set_Light_Func_HighBeam_Command(u_Light_Pixel pixel_states, uint8_t duty_cycle);
-void Set_Light_Func_TI_Hazard_Command(u_Light_Pixel pixel_states, uint8_t duty_cycle);
+void Set_Light_Func_HighBeam_Command(s_Light_Pixel_PWM_Command pixel_duties);
+void Set_Light_Func_TI_Hazard_Command(s_Light_Pixel_PWM_Command pixel_duties);
 void Set_Light_Func_FOG_Command(uint8_t duty_cycle);
 
 void Set_LED(Led_TypeDef LED, uint8_t status);

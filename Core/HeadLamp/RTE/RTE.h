@@ -40,7 +40,7 @@
 #define RTE_Write_Leveling_Command_Value(val) RTE_Write_CommandApp_MotorApp_Leveling_Command_Value(val)
 #define RTE_Write_HeadLamp_Temp(val) RTE_Write_FanApp_LightApp_HeadLamp_Temp(val)
 #define RTE_Write_Sensor_Ambiental_Temp(val) RTE_Write_SensorControll_FanApp_Sensor_Ambiental_Temp(val)
-#define RTE_Write_Sensor_Angle(val) RTE_Write_Sensor_MotorApp_Sensor_Angle(val)
+#define RTE_Write_Sensor_Angle(val) RTE_Write_SensorControl_MotorApp_Sensor_Angle(val)
 #define RTE_Write_FanSpeed(val) RTE_Write_FanApp_FanControl_FanSpeed(val)
 #define RTE_Write_Light_Control_Init_Done(val) RTE_Write_LightControl_LightApp_InitDone(val)
 #define RTE_Write_HighBeam_Pot_Control_Level(val) RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control_Level(val)
@@ -90,7 +90,7 @@ void RTE_Write_CommandApp_LightApp_HighBeam_Command(bool val);
 void RTE_Write_CommandApp_MotorApp_Leveling_Command_Value(uint16_t val);
 void RTE_Write_FanApp_LightApp_HeadLamp_Temp(uint8_t val);
 void RTE_Write_SensorControll_FanApp_Sensor_Ambiental_Temp(uint8_t val);
-void RTE_Write_Sensor_MotorApp_Sensor_Angle(uint8_t val);
+void RTE_Write_SensorControl_MotorApp_Sensor_Angle(uint8_t val);
 void RTE_Write_FanApp_FanControl_FanSpeed(uint8_t val);
 void RTE_Write_LightControl_LightApp_InitDone(bool val);
 void RTE_Write_CommandApp_LightApp_HighBeam_Pot_Control_Level(uint8_t val);
