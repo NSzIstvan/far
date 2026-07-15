@@ -12,6 +12,6 @@
 
 void Init_Motor_Control();
 void Run_Motor_Control_Main_20ms();
-void Set_Motor_Position(uint8_t pos);
+void Move_Motor_Steps(uint8_t direction, uint8_t steps);
 
 #endif /* HEADLAMP_HAL_MOTOR_CONTROL_INCLUDE_MOTOR_CONTROL_H_ */

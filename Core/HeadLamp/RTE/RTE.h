@@ -26,10 +26,10 @@
 #define Light_Functionality_High_Beam_Command(val)	RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(val)
 #define Light_Functionality_TI_Hazzard_Command(val)	RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(val)
 #define Light_Functionality_FOG_Command(val)				RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(val)
-#define RTE_Call_Send_Motor_Position(val) RTE_Call_MotorApp_MotorControl_Command_Position(val)
+#define RTE_Call_Move_Motor_Steps(val, val2) RTE_Call_MotorApp_MotorControl_Move_Motor_Steps(val, val2)
 
 #define RTE_Write_Light_Command_Rotary_Switch_Value(val) RTE_Write_CommandControl_CommandApp_Light_Command_Rotary_Switch_Value(val)
-#define RTE_Write_Leveling_Pot_Value(val) RTE_Write_CommandControl_CommandApp_Leveling_Pot_Value(val)
+#define RTE_Write_Leveling_Pot_Value(val) RTE_Write_CommandControl_MotorApp_Leveling_Pot_Value(val)
 #define RTE_Write_R_Blinker_Button_Value(val) RTE_Write_CommandControl_CommandApp_R_Blinker_Button_Value(val)
 #define RTE_Write_L_Blinker_Button_Value(val) RTE_Write_CommandControl_CommandApp_L_Blinker_Button_Value(val)
 #define RTE_Write_Hazzard_Button_Value(val) RTE_Write_CommandControl_CommandApp_Hazzard_Button_Value(val)
@@ -49,9 +49,10 @@
 #define RTE_Write_Increase_FanSpeed_HighBeam(val) RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(val)
 #define RTE_Write_HighBeam_Pot_Control_Value(val) RTE_Write_CommandControl_CommandApp_HighBeam_Pot_Control_Value(val)
 #define RTE_Write_Leveling_Sensor_Angle(val) RTE_Write_SensorControl_MotorApp_Leveling_Sensor_Angle(val)
+#define RTE_Write_Motor_Movement_Finished(val) RTE_Write_MotorControl_MotorApp_Motor_Movement_Finished(val)
 
 #define RTE_Read_Light_Command_Rotary_Switch_Value() RTE_Read_CommandApp_CommandControl_Light_Command_Rotary_Switch_Value()
-#define RTE_Read_Leveling_Pot_Value() RTE_Read_CommandApp_Command_Control_Leveling_Pot_Value()
+#define RTE_Read_Leveling_Pot_Value() RTE_Read_CommandControl_MotorApp_Leveling_Pot_Value()
 #define RTE_Read_R_Blinker_Button_Value() RTE_Read_CommandApp_Command_Control_R_Blinker_Button_Value()
 #define RTE_Read_L_Blinker_Button_Value() RTE_Read_CommandApp_Command_Control_L_Blinker_Button_Value()
 #define RTE_Read_Hazzard_Button_Value() RTE_Read_CommandApp_Command_Control_Hazzard_Button_Value()
@@ -70,6 +71,7 @@
 #define RTE_Read_Increase_FanSpeed_HighBeam() RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam()
 #define RTE_Read_HighBeam_Pot_Control_Value() RTE_Read_CommandControl_CommandApp_HighBeam_Pot_Control_Value()
 #define RTE_Read_Leveling_Sensor_Angle() RTE_Read_SensorControl_MotorApp_Leveling_Sensor_Angle()
+#define RTE_Read_Motor_Movement_Finished() RTE_Read_MotorControl_MotorApp_Motor_Movement_Finished()
 
 uint8_t RTE_Read_Light_Control_LED_Status();
 bool RTE_Internal_Read_LED(void);
@@ -77,7 +79,7 @@ void RTE_Call_Light_Control_To_HALL_Set_LED(Led_TypeDef LED, uint8_t status);
 uint8_t RTE_CALL_Light_Control_To_Hall_Get_LED(Led_TypeDef LED);
 
 void RTE_Write_CommandControl_CommandApp_Light_Command_Rotary_Switch_Value(uint8_t val);
-void RTE_Write_CommandControl_CommandApp_Leveling_Pot_Value(uint8_t val);
+void RTE_Write_CommandControl_MotorApp_Leveling_Pot_Value(uint8_t val);
 void RTE_Write_CommandControl_CommandApp_R_Blinker_Button_Value(bool val);
 void RTE_Write_CommandControl_CommandApp_L_Blinker_Button_Value(bool val);
 void RTE_Write_CommandControl_CommandApp_Hazzard_Button_Value(bool val);
@@ -97,16 +99,17 @@ void RTE_Write_LightApp_MotorApp_Motor_Command_Auto(bool val);
 void RTE_Write_LightApp_FanApp_Increase_FanSpeed_HighBeam(bool val);
 void RTE_Write_CommandControl_CommandApp_HighBeam_Pot_Control_Value(uint16_t val);
 void RTE_Write_SensorControl_MotorApp_Leveling_Sensor_Angle(uint8_t val);
+void RTE_Write_MotorControl_MotorApp_Motor_Movement_Finished(bool val);
 
 void RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(s_Light_Pixel_PWM_Command val);
 void RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(uint8_t val);
 void RTE_Call_LightApp_LightControl_Light_Func_HighBeam_Command(s_Light_Pixel_PWM_Command val);
 void RTE_Call_LightApp_LightControl_Light_Func_TI_Hazzard_Command(s_Light_Pixel_PWM_Command val);
 void RTE_Call_LightApp_LightControl_Light_Func_FOG_Command(uint8_t val);
-void RTE_Call_MotorApp_MotorControl_Command_Position(uint8_t val);
+void RTE_Call_MotorApp_MotorControl_Move_Motor_Steps(uint8_t val, uint8_t val2);
 
 uint8_t RTE_Read_CommandApp_CommandControl_Light_Command_Rotary_Switch_Value();
-uint8_t RTE_Read_CommandApp_Command_Control_Leveling_Pot_Value();
+uint8_t RTE_Read_CommandControl_MotorApp_Leveling_Pot_Value();
 bool RTE_Read_CommandApp_Command_Control_R_Blinker_Button_Value();
 bool RTE_Read_CommandApp_Command_Control_L_Blinker_Button_Value();
 bool RTE_Read_CommandApp_Command_Control_Hazzard_Button_Value();
@@ -126,6 +129,7 @@ bool RTE_Read_LightApp_MotorApp_Motor_Command_Auto();
 bool RTE_Read_LightApp_FanApp_Increase_FanSpeed_HighBeam();
 uint16_t RTE_Read_CommandControl_CommandApp_HighBeam_Pot_Control_Value();
 uint8_t RTE_Read_SensorControl_MotorApp_Leveling_Sensor_Angle();
+bool RTE_Read_MotorControl_MotorApp_Motor_Movement_Finished();
 
 void init();
 void cyclic_task_10ms();

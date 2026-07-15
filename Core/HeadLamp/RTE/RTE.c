@@ -30,6 +30,7 @@ static bool buffer_19 = false;
 static bool buffer_20 = false;
 static uint16_t buffer_21 = 0;
 static uint8_t buffer_22 = 0;
+static bool buffer_23 = false; 
 
 void init()
 {
@@ -130,7 +131,7 @@ void RTE_Write_CommandControl_CommandApp_Light_Command_Rotary_Switch_Value(uint8
 	buffer_2 = val;
 }
 
-void RTE_Write_CommandControl_CommandApp_Leveling_Pot_Value(uint8_t val)
+void RTE_Write_CommandControl_MotorApp_Leveling_Pot_Value(uint8_t val)
 {
 	buffer_3 = val;
 }
@@ -165,7 +166,7 @@ uint8_t RTE_Read_CommandApp_CommandControl_Light_Command_Rotary_Switch_Value()
 	return buffer_2;
 }
 
-uint8_t RTE_Read_CommandApp_Command_Control_Leveling_Pot_Value()
+uint8_t RTE_Read_CommandControl_MotorApp_Leveling_Pot_Value()
 {
 	return buffer_3;
 }
@@ -266,9 +267,9 @@ uint8_t RTE_Read_FanControl_FanApp_FanSpeed()
 	return buffer_15;
 }
 
-void RTE_Call_MotorApp_MotorControl_Command_Position(uint8_t val)
+void RTE_Call_MotorApp_MotorControl_Move_Motor_Steps(uint8_t val, uint8_t val2)
 {
-	Set_Motor_Position(val);
+	Move_Motor_Steps(val, val2);
 }
 
 void RTE_Write_LightControl_LightApp_InitDone(bool val)
@@ -339,4 +340,14 @@ void RTE_Write_SensorControl_MotorApp_Leveling_Sensor_Angle(uint8_t val)
 uint8_t RTE_Read_SensorControl_MotorApp_Leveling_Sensor_Angle()
 {
 	return buffer_22;
+}
+
+void RTE_Write_MotorControl_MotorApp_Motor_Movement_Finished(bool val)
+{
+	buffer_23 = val;
+}
+
+bool RTE_Read_MotorControl_MotorApp_Motor_Movement_Finished()
+{
+    return buffer_23;
 }

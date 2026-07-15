@@ -8,13 +8,18 @@
 #include "../HeadLamp/RTE/RTE.h"
 #include "../include/Motor_Control.h"
 
-uint16_t current_motor_pos = 0u;
-uint16_t requested_motor_pos = 0u;
+#define MOTOR_CONTROL_DIRECTION_DOWN                0U
+#define MOTOR_CONTROL_DIRECTION_UP                  1U
+
+uint8_t current_motor_pos = 0u;
+uint8_t requested_motor_pos = 0u;
+uint8_t motor_direction = MOTOR_CONTROL_DIRECTION_DOWN;
 
 void Init_Motor_Control()
 {
 	current_motor_pos = 0u;
 	requested_motor_pos = 0u;
+	motor_direction = MOTOR_CONTROL_DIRECTION_DOWN;
 }
 
 void Run_Motor_Control_Main_20ms()
@@ -22,7 +27,7 @@ void Run_Motor_Control_Main_20ms()
 
 }
 
-void Set_Motor_Position(uint8_t pos)
+void Move_Motor_Steps(uint8_t direction, uint8_t steps)
 {
 	requested_motor_pos = pos;
 }
