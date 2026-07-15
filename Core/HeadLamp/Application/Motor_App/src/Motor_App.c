@@ -107,7 +107,6 @@ static s_Motor_App_Output_Data motor_app_output_data;
 
 static e_Motor_App_State motor_app_state = MOTOR_APP_REF_TO_MIN_REQ;
 static uint16_t motor_stuck_timer = 0;
-static uint8_t motor_app_number_of_retries = 0;
 
 static bool motor_app_is_initialized = false;
 static bool motor_app_waiting_for_normal_movement = false;
@@ -501,13 +500,13 @@ void Init_Motor_App(void)
     Motor_App_Reset_Output_Data();
     Motor_App_Reset_Internal_Data();
 
-    motor_app_number_of_retries = 0;
-
     motor_app_is_initialized = true;
 }
 
 void Run_Motor_App_Main_20ms(void)
 {
+    static uint8_t motor_app_number_of_retries = 0u;
+    
     if (false == motor_app_is_initialized)
     {
         Init_Motor_App();
@@ -516,7 +515,7 @@ void Run_Motor_App_Main_20ms(void)
     {   
         if (motor_stuck_timer >= MOTOR_APP_STUCK_TIMEOUT_MS)
         {
-            Motor_App_Reset_Internal_Data();
+            Init_Motor_App();
             motor_app_number_of_retries++;
         }
 

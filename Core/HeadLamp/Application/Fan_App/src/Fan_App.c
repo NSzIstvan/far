@@ -186,7 +186,7 @@ static uint8_t Fan_App_Limit_Temperature_Value(uint8_t temperature_value)
 {
     uint8_t local_temperature_value = temperature_value;
 
-    if (local_temperature_value >= FAN_APP_TEMP_MAX_VALUE)
+    if (local_temperature_value > FAN_APP_TEMP_MAX_VALUE)
     {
         local_temperature_value = FAN_APP_TEMP_MAX_VALUE;
     }
@@ -230,7 +230,7 @@ static uint8_t Fan_App_Increase_Speed_One_Step(uint8_t fan_speed)
 {
     uint8_t local_fan_speed = fan_speed;
 
-	if(local_fan_speed > FAN_APP_FAN_SPEED_100)
+	if(local_fan_speed >= FAN_APP_FAN_SPEED_100)
 	{
 		local_fan_speed = FAN_APP_FAN_SPEED_100;
 	}
