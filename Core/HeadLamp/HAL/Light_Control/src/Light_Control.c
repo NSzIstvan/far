@@ -1,106 +1,293 @@
 /*
- * Light_HAL.c
+ * Light_Control.c
  *
- *  Created on: Apr 13, 2026
- *      Author: nsist
+ * Hardware-independent light command handling and four-phase software PWM.
  */
-#include "cmsis_os2.h"
-#include "stm32h7xx_nucleo.h"
-#include "../include/Light_Control.h"
-#include "../HeadLamp/RTE/RTE.h"
 
-#define POS_DRL_TIM (&htim3)
-#define POS_DRL_CH (TIM_CHANNEL_3)
-#define LB_TIM (&htim8)
-#define LB_CH (TIM_CHANNEL_2)
-#define HB_TIM (&htim8)
-#define HB_CH (TIM_CHANNEL_2)
-#define TI_HA_TIM (&htim8)
-#define TI_HA_CH (TIM_CHANNEL_2)
-#define FOG_TIM (&htim3)
-#define FOG_CH (TIM_CHANNEL_3)
-#define MAP_DUTY_CYCLE(x) (x*10)
-#define OUTPUT_LED(x1, x2, x3) __HAL_TIM_SET_COMPARE(x1, x2, MAP_DUTY_CYCLE(x3))
+#include "../include/Light_Control.h"
+#include "../../../RTE/RTE.h"
+
+#include <string.h>
+
+#define LIGHT_CONTROL_OUTPUT_OFF              (0U)
+#define LIGHT_CONTROL_ALL_PIXELS_OFF          (0x00U)
+
+/* Four equal PWM phases provide 0%, 25%, 50%, 75% and 100% pixel duty levels. */
+#define LIGHT_CONTROL_PWM_PHASE_25             (0U)
+#define LIGHT_CONTROL_PWM_PHASE_50             (1U)
+#define LIGHT_CONTROL_PWM_PHASE_75             (2U)
+#define LIGHT_CONTROL_PWM_PHASE_100            (3U)
 
 typedef struct
 {
-	TIM_HandleTypeDef light_func_TIM;
-	uint8_t light_func_CHTIM;
-	uint8_t duty_cycle;
-}s_Light_Func_Desc;
+    s_Light_Pixel_PWM_Command requested_command;
+    s_Light_Pixel_PWM_Command active_command;
+    bool update_pending;
+} Light_Control_PixelGroupStateType;
 
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim8;
-
-s_Light_Func_Desc light_func[7] = {0};
-bool isInitDone = false;
-
-
-/*
-*	Need these lines for testing
-void Set_LED(Led_TypeDef LED, uint8_t status)
+typedef struct
 {
-	if (status == 1)
-	{
-		BSP_LED_On(LED);
-	}
-	else
-	{
-		BSP_LED_Off(LED);
-	}
+    Light_Control_PixelGroupStateType pixel_group[LIGHT_CONTROL_GROUP_COUNT];
+    uint8_t low_beam_duty;
+    uint8_t fog_light_duty;
+    uint8_t pwm_phase;
+    bool init_done;
+} Light_Control_StateType;
 
-}
-uint8_t Get_LED(Led_TypeDef LED)
+static Light_Control_StateType Light_Control_State;
+
+/** Limits a percentage command to the valid physical output range of 0...100 percent. */
+static uint8_t Light_Control_Clamp_Duty(uint8_t duty_cycle);
+
+/** Copies pending pixel commands to the active PWM command set at a PWM-frame boundary. */
+static void Light_Control_Activate_Pending_Commands(void);
+
+/** Builds the eight-bit output mask required for one group during the selected PWM phase. */
+static uint8_t Light_Control_Build_Phase_Mask(
+    const s_Light_Pixel_PWM_Command *command,
+    uint8_t phase);
+
+/** Sends one eight-bit pixel mask to the selected TPIC6595 chain and latches its outputs. */
+static void Light_Control_Write_Shift_Register(
+    Light_Control_GroupType group,
+    uint8_t output_mask);
+
+/** Enables or disables the high-side supply of one multi-pixel light group. */
+static void Light_Control_Set_Group_Enable(
+    Light_Control_GroupType group,
+    bool enable);
+
+/** Applies a 0...100 percent command to the dedicated low-beam PWM output. */
+static void Light_Control_Write_Low_Beam_PWM(uint8_t duty_cycle);
+
+/** Applies a 0...100 percent command to the dedicated fog-light PWM output. */
+static void Light_Control_Write_Fog_Light_PWM(uint8_t duty_cycle);
+
+/** Refreshes all three pixel groups for the current software-PWM phase. */
+static void Light_Control_Refresh_Pixel_Outputs(void);
+
+/** Limits a percentage command to the valid physical output range of 0...100 percent. */
+static uint8_t Light_Control_Clamp_Duty(uint8_t duty_cycle)
 {
-	uint8_t state;
+    if (duty_cycle > LIGHT_CONTROL_DUTY_MAX_PERCENT)
+    {
+        duty_cycle = LIGHT_CONTROL_DUTY_MAX_PERCENT;
+    }
 
-	if(BSP_LED_GetState(LED) == GPIO_PIN_RESET)
-	{
-		state = 0;
-	}
-	else
-	{
-		state = 1;
-	}
-
-	return state;
+    return duty_cycle;
 }
-*/
 
-/* Set the LEDs for the POS_DRL_FOG functionalities  */
+/** Copies pending pixel commands to the active PWM command set at a PWM-frame boundary. */
+static void Light_Control_Activate_Pending_Commands(void)
+{
+    uint8_t group_index;
+
+    for (group_index = 0U;
+         group_index < (uint8_t)LIGHT_CONTROL_GROUP_COUNT;
+         group_index++)
+    {
+        if (Light_Control_State.pixel_group[group_index].update_pending != false)
+        {
+            Light_Control_State.pixel_group[group_index].active_command =
+                Light_Control_State.pixel_group[group_index].requested_command;
+            Light_Control_State.pixel_group[group_index].update_pending = false;
+        }
+    }
+}
+
+/** Builds the eight-bit output mask required for one group during the selected PWM phase. */
+static uint8_t Light_Control_Build_Phase_Mask(
+    const s_Light_Pixel_PWM_Command *command,
+    uint8_t phase)
+{
+    uint8_t output_mask = command->pixels_100.byte;
+
+    if (phase <= LIGHT_CONTROL_PWM_PHASE_75)
+    {
+        output_mask |= command->pixels_75.byte;
+    }
+
+    if (phase <= LIGHT_CONTROL_PWM_PHASE_50)
+    {
+        output_mask |= command->pixels_50.byte;
+    }
+
+    if (phase == LIGHT_CONTROL_PWM_PHASE_25)
+    {
+        output_mask |= command->pixels_25.byte;
+    }
+
+    return output_mask;
+}
+
+/** Sends one eight-bit pixel mask to the selected TPIC6595 chain and latches its outputs. */
+static void Light_Control_Write_Shift_Register(
+    Light_Control_GroupType group,
+    uint8_t output_mask)
+{
+    (void)group;
+    (void)output_mask;
+
+    /* TO-DO PIN HANDLING NEEDED: Select the requested TPIC6595, shift output_mask via SPI/GPIO, then pulse RCK. */
+}
+
+/** Enables or disables the high-side supply of one multi-pixel light group. */
+static void Light_Control_Set_Group_Enable(
+    Light_Control_GroupType group,
+    bool enable)
+{
+    (void)group;
+    (void)enable;
+
+    /* TO-DO PIN HANDLING NEEDED: Drive the PMOS/group-enable pin using the required active polarity. */
+}
+
+/** Applies a 0...100 percent command to the dedicated low-beam PWM output. */
+static void Light_Control_Write_Low_Beam_PWM(uint8_t duty_cycle)
+{
+    (void)duty_cycle;
+
+    /* TO-DO PIN HANDLING NEEDED: Write the low-beam timer compare value or low-beam GPIO state. */
+}
+
+/** Applies a 0...100 percent command to the dedicated fog-light PWM output. */
+static void Light_Control_Write_Fog_Light_PWM(uint8_t duty_cycle)
+{
+    (void)duty_cycle;
+
+    /* TO-DO PIN HANDLING NEEDED: Write the fog-light timer compare value or fog-light GPIO state. */
+}
+
+/** Refreshes all three pixel groups for the current software-PWM phase. */
+static void Light_Control_Refresh_Pixel_Outputs(void)
+{
+    uint8_t group_index;
+
+    for (group_index = 0U;
+         group_index < (uint8_t)LIGHT_CONTROL_GROUP_COUNT;
+         group_index++)
+    {
+        const uint8_t output_mask = Light_Control_Build_Phase_Mask(
+            &Light_Control_State.pixel_group[group_index].active_command,
+            Light_Control_State.pwm_phase);
+
+        Light_Control_Write_Shift_Register(
+            (Light_Control_GroupType)group_index,
+            output_mask);
+
+        Light_Control_Set_Group_Enable(
+            (Light_Control_GroupType)group_index,
+            (output_mask != LIGHT_CONTROL_ALL_PIXELS_OFF));
+    }
+}
+
+/** Initializes the light-control state and leaves every physical light output in its safe OFF state. */
+void Init_Light_Control(void)
+{
+    (void)memset(&Light_Control_State, 0, sizeof(Light_Control_State));
+
+    /* TO-DO PIN HANDLING NEEDED: Initialize SPI/GPIO/timer peripherals and configure every light output to its safe OFF state. */
+
+    Light_Control_All_Outputs_Off();
+    Light_Control_State.init_done = true;
+    RTE_Write_Light_Control_Init_Done(true);
+}
+
+/** Publishes the initialization state and performs low-frequency supervision of the light-control module. */
+void Run_Light_Control_Main_10ms(void)
+{
+    RTE_Write_Light_Control_Init_Done(Light_Control_State.init_done);
+}
+
+/** Executes one software-PWM phase and refreshes the three 8-channel light groups. Call every 1 ms. */
+void Run_Light_Control_PWM_Main_1ms(void)
+{
+    if (Light_Control_State.init_done == false)
+    {
+        return;
+    }
+
+    if (Light_Control_State.pwm_phase == LIGHT_CONTROL_PWM_PHASE_25)
+    {
+        Light_Control_Activate_Pending_Commands();
+    }
+
+    Light_Control_Refresh_Pixel_Outputs();
+
+    Light_Control_State.pwm_phase++;
+    if (Light_Control_State.pwm_phase >= LIGHT_CONTROL_PWM_PHASE_COUNT)
+    {
+        Light_Control_State.pwm_phase = LIGHT_CONTROL_PWM_PHASE_25;
+    }
+}
+
+/** Stores the requested per-pixel PWM command for the combined position/DRL light group. */
 void Set_Light_Func_POS_DRL_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
+    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_POS_DRL].requested_command = pixel_duties;
+    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_POS_DRL].update_pending = true;
 }
 
-/* Set the LEDs for the Low Beam functionality */
+/** Stores and applies the requested low-beam duty cycle in the range 0...100 percent. */
 void Set_Light_Func_LowBeam_Command(uint8_t duty_cycle)
 {
+    Light_Control_State.low_beam_duty = Light_Control_Clamp_Duty(duty_cycle);
+    Light_Control_Write_Low_Beam_PWM(Light_Control_State.low_beam_duty);
 }
 
-/* Set the LEDs for the High Beam functionality */
+/** Stores the requested per-pixel PWM command for the high-beam light group. */
 void Set_Light_Func_HighBeam_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
+    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_HIGH_BEAM].requested_command = pixel_duties;
+    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_HIGH_BEAM].update_pending = true;
 }
 
-/* Set the LEDs for the Turn Indicator and Hazard functionalities */
+/** Stores the requested per-pixel PWM command for turn-indicator and hazard operation. */
 void Set_Light_Func_TI_Hazard_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
+    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_TURN_INDICATOR].requested_command = pixel_duties;
+    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_TURN_INDICATOR].update_pending = true;
 }
 
-/* Set the LEDs for the FOG functionality */
+/** Stores and applies the requested fog-light duty cycle in the range 0...100 percent. */
 void Set_Light_Func_FOG_Command(uint8_t duty_cycle)
 {
+    Light_Control_State.fog_light_duty = Light_Control_Clamp_Duty(duty_cycle);
+    Light_Control_Write_Fog_Light_PWM(Light_Control_State.fog_light_duty);
 }
 
-void Init_Light_Control()
+/** Forces all controlled light outputs OFF and clears all pending light commands. */
+void Light_Control_All_Outputs_Off(void)
 {
-//	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
-//	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
-	isInitDone = true;
+    uint8_t group_index;
+
+    for (group_index = 0U;
+         group_index < (uint8_t)LIGHT_CONTROL_GROUP_COUNT;
+         group_index++)
+    {
+        (void)memset(
+            &Light_Control_State.pixel_group[group_index],
+            0,
+            sizeof(Light_Control_State.pixel_group[group_index]));
+
+        Light_Control_Write_Shift_Register(
+            (Light_Control_GroupType)group_index,
+            LIGHT_CONTROL_ALL_PIXELS_OFF);
+        Light_Control_Set_Group_Enable(
+            (Light_Control_GroupType)group_index,
+            false);
+    }
+
+    Light_Control_State.low_beam_duty = LIGHT_CONTROL_OUTPUT_OFF;
+    Light_Control_State.fog_light_duty = LIGHT_CONTROL_OUTPUT_OFF;
+    Light_Control_State.pwm_phase = LIGHT_CONTROL_PWM_PHASE_25;
+
+    Light_Control_Write_Low_Beam_PWM(LIGHT_CONTROL_OUTPUT_OFF);
+    Light_Control_Write_Fog_Light_PWM(LIGHT_CONTROL_OUTPUT_OFF);
 }
 
-void Run_Light_Control_Main_10ms()
+/** Returns true after Light Control has completed its initialization sequence. */
+bool Light_Control_Is_Init_Done(void)
 {
-	RTE_Write_Light_Control_Init_Done(isInitDone);
+    return Light_Control_State.init_done;
 }

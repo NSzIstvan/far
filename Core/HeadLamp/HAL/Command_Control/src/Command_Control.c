@@ -22,7 +22,7 @@ uint8_t R_Blinker_Button_Pin = 0U;
 uint8_t L_Blinker_Button_Pin = 0U;
 uint8_t Hazzard_Button_Pin = 0U;
 uint8_t HighBeam_Button_Pin = 0U;
-uint16_t HighBeam_Pot_Pin = 0U;
+uint16_t HighBeam_Pot_Value = 0U;
 
 void Get_HighBeam_Pot_Value()
 {
@@ -120,7 +120,7 @@ void Run_Command_Control_Main_20ms()
 	Get_R_Blinker_Value();
 	Get_Hazzard_Value();
 	Get_HighBeam_Value();
-	Get_HighBeam_Pot_Value;
+	Get_HighBeam_Pot_Value();
 
 	Write_Light_Switch_Value();
 	Write_Leveling_Pot_Value();

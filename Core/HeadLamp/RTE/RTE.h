@@ -18,8 +18,8 @@
 
 #define RTE_Read_LED_Status() RTE_Read_Light_Control_LED_Status()
 #define RTE_Write_LED_Status(val) RTE_Write_Light_HAL_LED_Status(val)
-#define RTE_Call_Set_LED(val, status) RTE_Call_Light_Control_To_HALL_Set_LED(val, status)
-#define RTE_Call_Get_LED(val) RTE_CALL_Light_Control_To_Hall_Get_LED(val)
+#define RTE_Call_Set_LED(val, status) RTE_Call_Light_Control_To_HAL_Set_LED(val, status)
+#define RTE_Call_Get_LED(val) RTE_CALL_Light_Control_To_HAL_Get_LED(val)
 
 #define Light_Functionality_POS_DRL_Command(val) 	RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(val)
 #define Light_Functionality_Low_Beam_Command(val) 			RTE_Call_LightApp_LightControl_Light_Func_LowBeam_Command(val)
@@ -76,7 +76,7 @@
 uint8_t RTE_Read_Light_Control_LED_Status();
 bool RTE_Internal_Read_LED(void);
 void RTE_Call_Light_Control_To_HALL_Set_LED(Led_TypeDef LED, uint8_t status);
-uint8_t RTE_CALL_Light_Control_To_Hall_Get_LED(Led_TypeDef LED);
+uint8_t RTE_CALL_Light_Control_To_HAL_Get_LED(Led_TypeDef LED);
 
 void RTE_Write_CommandControl_CommandApp_Light_Command_Rotary_Switch_Value(uint8_t val);
 void RTE_Write_CommandControl_MotorApp_Leveling_Pot_Value(uint8_t val);
@@ -132,6 +132,7 @@ uint8_t RTE_Read_SensorControl_MotorApp_Leveling_Sensor_Angle();
 bool RTE_Read_MotorControl_MotorApp_Motor_Movement_Finished();
 
 void init();
+void cyclic_task_1ms();
 void cyclic_task_10ms();
 void cyclic_task_20ms();
 void cyclic_task_50ms();

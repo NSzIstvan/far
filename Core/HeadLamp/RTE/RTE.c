@@ -56,14 +56,20 @@ void init()
 
 void cyclic_task_10ms()
 {
-	Run_Light_App_Main_10ms();
-	Run_Light_Control_Main_10ms();
+	if(false != isInit)
+	{
+		Run_Light_App_Main_10ms();
+		Run_Light_Control_Main_10ms();
+	}
 }
 
 void cyclic_task_50ms()
 {
-	Run_Fan_App_Main_50ms();
-	Run_Fan_Control_Main_50ms();
+	if(false != isInit)
+	{
+		Run_Fan_App_Main_50ms();
+		Run_Fan_Control_Main_50ms();
+	}
 }
 
 void cyclic_task_20ms()
@@ -81,6 +87,15 @@ void cyclic_task_20ms()
 	}
 }
 
+void cyclic_task_1ms()
+{
+	if(false != isInit)
+	{
+		Run_Light_Control_PWM_Main_1ms();
+	}
+
+}
+
 uint8_t RTE_Read_Light_Control_LED_Status()
 {
 	return buffer_1;
@@ -91,12 +106,12 @@ void RTE_Write_Light_HAL_LED_Status(uint8_t val)
 	buffer_1 = val;
 }
 
-void RTE_Call_Light_Control_To_HALL_Set_LED(Led_TypeDef LED, uint8_t status)
+void RTE_Call_Light_Control_To_HAL_Set_LED(Led_TypeDef LED, uint8_t status)
 {
 	Set_LED(LED, status);
 }
 
-uint8_t RTE_CALL_Light_Control_To_Hall_Get_LED(Led_TypeDef LED)
+uint8_t RTE_CALL_Light_Control_To_HAL_Get_LED(Led_TypeDef LED)
 {
 	return Get_LED(LED);
 }
