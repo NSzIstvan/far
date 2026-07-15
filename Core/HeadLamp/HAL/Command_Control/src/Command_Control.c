@@ -22,6 +22,12 @@ uint8_t R_Blinker_Button_Pin = 0U;
 uint8_t L_Blinker_Button_Pin = 0U;
 uint8_t Hazzard_Button_Pin = 0U;
 uint8_t HighBeam_Button_Pin = 0U;
+uint16_t HighBeam_Pot_Pin = 0U;
+
+void Get_HighBeam_Pot_Value()
+{
+	//read pin
+}
 
 /* Read the value for the Light_Rotor_Switch from the PIN */
 void Get_Light_Switch_Value()
@@ -96,11 +102,16 @@ void Write_HighBeam_Button_Value()
 	RTE_Write_HighBeam_Button_Value(HighBeam_Button_Value);
 }
 
+void Write_HighBeam_Pot_Value()
+{
+	RTE_Write_HighBeam_Pot_Control_Value(HighBeam_Pot_Value);
+}
+
 void Init_Command_Control()
 {
 	/*Set the pin numbers for all the commands*/
-
 }
+
 void Run_Command_Control_Main_20ms()
 {
 	Get_Light_Switch_Value();
@@ -109,6 +120,7 @@ void Run_Command_Control_Main_20ms()
 	Get_R_Blinker_Value();
 	Get_Hazzard_Value();
 	Get_HighBeam_Value();
+	Get_HighBeam_Pot_Value;
 
 	Write_Light_Switch_Value();
 	Write_Leveling_Pot_Value();
@@ -116,4 +128,5 @@ void Run_Command_Control_Main_20ms()
 	Write_R_Blinker_Button_Value();
 	Write_Hazzard_Button_Value();
 	Write_HighBeam_Button_Value();
+	Write_HighBeam_Pot_Value();
 }
