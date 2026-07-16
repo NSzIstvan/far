@@ -7,10 +7,11 @@
 
 
 #include "../HeadLamp/RTE/RTE.h"
-#include "../include/Sensor.h"
+#include "../include/Sensor_Control.h"
 
 uint8_t temperature_value_read = 0;
 uint8_t angle_value_read = 0;
+uint16_t HighBeam_Pot_Pin = 0U;
 
 uint8_t Read_Temp_Sensor_Value();
 uint8_t Read_Angle_Sensor_Value();
@@ -21,7 +22,6 @@ void Init_Sensor()
 {
 	temperature_value_read = 0;
 	angle_value_read = 0;
-	HighBeam_Pot_Value = 0U;
 	HighBeam_Pot_Pin = 0U;
 }
 

@@ -5,8 +5,8 @@
  * Author: nsist
  */
 
-#ifndef HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_Light_Scrolling_Ind.h_
-#define HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_Light_Scrolling_Ind.h_
+#ifndef HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_LIGHT_SCROLLING_IND_H_
+#define HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_LIGHT_SCROLLING_IND_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -50,4 +50,4 @@ s_Light_Pixel_PWM_Command Light_Scrolling_Ind_Get_Output(void);
  */
 bool Light_Scrolling_Ind_Is_Active(void);
 
-#endif /* HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_Light_Scrolling_Ind.h_ */
+#endif /* HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_LIGHT_SCROLLING_IND_H_ */

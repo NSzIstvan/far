@@ -6,6 +6,8 @@
 
 #include "../include/Light_Control.h"
 #include "../../../RTE/RTE.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 #include <string.h>
 

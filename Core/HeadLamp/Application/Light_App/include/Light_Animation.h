@@ -5,8 +5,8 @@
  * Author: nsist
  */
 
-#ifndef HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_Light_Animation.h_
-#define HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_Light_Animation.h_
+#ifndef HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_LIGHT_ANIMATION_H_
+#define HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_LIGHT_ANIMATION_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -67,4 +67,4 @@ s_Light_Animation_Output Light_Animation_Get_Output(void);
 bool Light_Animation_Is_Active(void);
 bool Light_Animation_Is_Finished(void);
 
-#endif /* HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_Light_Animation.h_ */
+#endif /* HEADLAMP_APPLICATION_LIGHT_APP_LIGHT_APP_INCLUDE_LIGHT_ANIMATION_H_*/
