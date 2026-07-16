@@ -85,6 +85,13 @@ const osThreadAttr_t Initialization_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityRealtime,
 };
+/* Definitions for Task_1ms */
+osThreadId_t Task_1msHandle;
+const osThreadAttr_t Task_1ms_attributes = {
+  .name = "Task_1ms",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -101,6 +108,7 @@ void runTask10ms(void *argument);
 void runTask20ms(void *argument);
 void runTask50ms(void *argument);
 void runInit(void *argument);
+void runTask1ms(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -184,6 +192,9 @@ int main(void)
 
   /* creation of Initialization */
   InitializationHandle = osThreadNew(runInit, NULL, &Initialization_attributes);
+
+  /* creation of Task_1ms */
+  Task_1msHandle = osThreadNew(runTask1ms, NULL, &Task_1ms_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -593,6 +604,25 @@ void runInit(void *argument)
     osDelay(1);
   }
   /* USER CODE END runInit */
+}
+
+/* USER CODE BEGIN Header_runTask1ms */
+/**
+* @brief Function implementing the Task_1ms thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_runTask1ms */
+void runTask1ms(void *argument)
+{
+  /* USER CODE BEGIN runTask1ms */
+  /* Infinite loop */
+  for(;;)
+  {
+	  cyclic_task_1ms();
+    osDelay(1);
+  }
+  /* USER CODE END runTask1ms */
 }
 
  /* MPU Configuration */
