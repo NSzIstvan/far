@@ -96,26 +96,6 @@ void cyclic_task_1ms()
 
 }
 
-uint8_t RTE_Read_Light_Control_LED_Status()
-{
-	return buffer_1;
-}
-
-void RTE_Write_Light_HAL_LED_Status(uint8_t val)
-{
-	buffer_1 = val;
-}
-
-void RTE_Call_Light_Control_To_HAL_Set_LED(Led_TypeDef LED, uint8_t status)
-{
-	Set_LED(LED, status);
-}
-
-uint8_t RTE_CALL_Light_Control_To_HAL_Get_LED(Led_TypeDef LED)
-{
-	return Get_LED(LED);
-}
-
 void RTE_Call_LightApp_LightControl_Light_Func_DRL_POS_Command(s_Light_Pixel_PWM_Command val)
 {
 	Set_Light_Func_POS_DRL_Command(val);

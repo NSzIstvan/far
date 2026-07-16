@@ -66,6 +66,9 @@ static void Light_Control_Write_Fog_Light_PWM(uint8_t duty_cycle);
 /** Refreshes all three pixel groups for the current software-PWM phase. */
 static void Light_Control_Refresh_Pixel_Outputs(void);
 
+static void Light_Control_Set_Pixel_Command(Light_Control_GroupType group,
+    s_Light_Pixel_PWM_Command pixel_duties);
+
 /** Limits a percentage command to the valid physical output range of 0...100 percent. */
 static uint8_t Light_Control_Clamp_Duty(uint8_t duty_cycle)
 {
@@ -82,6 +85,8 @@ static void Light_Control_Activate_Pending_Commands(void)
 {
     uint8_t group_index;
 
+    taskENTER_CRITICAL();
+
     for (group_index = 0U;
          group_index < (uint8_t)LIGHT_CONTROL_GROUP_COUNT;
          group_index++)
@@ -93,6 +98,8 @@ static void Light_Control_Activate_Pending_Commands(void)
             Light_Control_State.pixel_group[group_index].update_pending = false;
         }
     }
+
+    taskEXIT_CRITICAL();
 }
 
 /** Builds the eight-bit output mask required for one group during the selected PWM phase. */
@@ -158,6 +165,19 @@ static void Light_Control_Write_Fog_Light_PWM(uint8_t duty_cycle)
     /* TO-DO PIN HANDLING NEEDED: Write the fog-light timer compare value or fog-light GPIO state. */
 }
 
+/**
+ * Returns true when at least one pixel in the command has a non-zero duty.
+ */
+static bool Light_Control_Is_Group_Command_Active(
+    const s_Light_Pixel_PWM_Command *command)
+{
+    return
+        (command->pixels_25.byte  != 0U) ||
+        (command->pixels_50.byte  != 0U) ||
+        (command->pixels_75.byte  != 0U) ||
+        (command->pixels_100.byte != 0U);
+}
+
 /** Refreshes all three pixel groups for the current software-PWM phase. */
 static void Light_Control_Refresh_Pixel_Outputs(void)
 {
@@ -167,17 +187,19 @@ static void Light_Control_Refresh_Pixel_Outputs(void)
          group_index < (uint8_t)LIGHT_CONTROL_GROUP_COUNT;
          group_index++)
     {
-        const uint8_t output_mask = Light_Control_Build_Phase_Mask(
-            &Light_Control_State.pixel_group[group_index].active_command,
-            Light_Control_State.pwm_phase);
+        const s_Light_Pixel_PWM_Command *active_command =
+            &Light_Control_State.pixel_group[group_index].active_command;
 
-        Light_Control_Write_Shift_Register(
-            (Light_Control_GroupType)group_index,
-            output_mask);
+        const uint8_t output_mask =
+            Light_Control_Build_Phase_Mask(active_command,
+                Light_Control_State.pwm_phase);
 
         Light_Control_Set_Group_Enable(
             (Light_Control_GroupType)group_index,
-            (output_mask != LIGHT_CONTROL_ALL_PIXELS_OFF));
+            Light_Control_Is_Group_Command_Active(active_command));
+
+        Light_Control_Write_Shift_Register(
+            (Light_Control_GroupType)group_index,output_mask);
     }
 }
 
@@ -221,11 +243,24 @@ void Run_Light_Control_PWM_Main_1ms(void)
     }
 }
 
+static void Light_Control_Set_Pixel_Command(
+    Light_Control_GroupType group,
+    s_Light_Pixel_PWM_Command pixel_duties)
+{
+    taskENTER_CRITICAL();
+
+    Light_Control_State.pixel_group[group].requested_command =
+        pixel_duties;
+
+    Light_Control_State.pixel_group[group].update_pending = true;
+
+    taskEXIT_CRITICAL();
+}
+
 /** Stores the requested per-pixel PWM command for the combined position/DRL light group. */
 void Set_Light_Func_POS_DRL_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
-    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_POS_DRL].requested_command = pixel_duties;
-    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_POS_DRL].update_pending = true;
+    Light_Control_Set_Pixel_Command(LIGHT_CONTROL_GROUP_POS_DRL, pixel_duties);
 }
 
 /** Stores and applies the requested low-beam duty cycle in the range 0...100 percent. */
@@ -238,15 +273,13 @@ void Set_Light_Func_LowBeam_Command(uint8_t duty_cycle)
 /** Stores the requested per-pixel PWM command for the high-beam light group. */
 void Set_Light_Func_HighBeam_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
-    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_HIGH_BEAM].requested_command = pixel_duties;
-    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_HIGH_BEAM].update_pending = true;
+    Light_Control_Set_Pixel_Command(LIGHT_CONTROL_GROUP_HIGH_BEAM, pixel_duties);
 }
 
 /** Stores the requested per-pixel PWM command for turn-indicator and hazard operation. */
 void Set_Light_Func_TI_Hazard_Command(s_Light_Pixel_PWM_Command pixel_duties)
 {
-    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_TURN_INDICATOR].requested_command = pixel_duties;
-    Light_Control_State.pixel_group[LIGHT_CONTROL_GROUP_TURN_INDICATOR].update_pending = true;
+    Light_Control_Set_Pixel_Command(LIGHT_CONTROL_GROUP_TURN_INDICATOR, pixel_duties);
 }
 
 /** Stores and applies the requested fog-light duty cycle in the range 0...100 percent. */
